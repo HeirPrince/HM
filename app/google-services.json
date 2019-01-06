@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "160621845959",
+    "firebase_url": "https://hmdb-459ce.firebaseio.com",
+    "project_id": "hmdb-459ce",
+    "storage_bucket": "hmdb-459ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:160621845959:android:5c70d9378708bb23",
+        "android_client_info": {
+          "package_name": "nasaaty.com.hm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "160621845959-v2lkjt8nhnjmsfnqr8psid36s9hl6o0v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nasaaty.com.hm",
+            "certificate_hash": "260d703ec7880002cd6d0e51f953ea8ef0d38e92"
+          }
+        },
+        {
+          "client_id": "160621845959-8mfvl1dstu2hs5adt1patfa8lrfkk5vb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCiAf3WSaagS-pQ1DIEaXW_dxORqFk2jg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "160621845959-8mfvl1dstu2hs5adt1patfa8lrfkk5vb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

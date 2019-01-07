@@ -5,6 +5,7 @@
     <color name="colorAccent">#D81B60</color>
 
     <!--SPLASH COLOR RESOURCES-->
+    <color name="white">#FFF</color>
     <color name="screen_1">#4CAF50</color>
     <color name="screen_2">#8BC34A</color>
     <color name="screen_3">#CDDC39</color>

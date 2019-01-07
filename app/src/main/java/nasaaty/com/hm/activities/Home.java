@@ -1,10 +1,13 @@
 package nasaaty.com.hm.activities;
 
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,7 +15,6 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.firestore.auth.User;
 
 import nasaaty.com.hm.R;
 
@@ -21,7 +23,7 @@ public class Home extends AppCompatActivity {
 	TextView username;
 	private FirebaseAuth firebaseAuth;
 	private FirebaseAuth.AuthStateListener listener;
-	private FirebaseUser curretUser;
+	private FirebaseUser currentUser;
 	boolean doubleBackToExitPressedOnce = false;
 	private Handler handler = new Handler();
 
@@ -35,9 +37,9 @@ public class Home extends AppCompatActivity {
 		listener = new FirebaseAuth.AuthStateListener() {
 			@Override
 			public void onAuthStateChanged(@NonNull FirebaseAuth fireAuth) {
-				curretUser = fireAuth.getCurrentUser();
-				if (curretUser != null){
-					for (UserInfo profile : curretUser.getProviderData()) {
+				currentUser = fireAuth.getCurrentUser();
+				if (currentUser != null){
+					for (UserInfo profile : currentUser.getProviderData()) {
 						// Id of the provider (ex: google.com)
 						String providerId = profile.getProviderId();
 
@@ -59,7 +61,7 @@ public class Home extends AppCompatActivity {
 	}
 
 	public void signOut(View view) {
-		firebaseAuth.signOut();
+
 	}
 
 	public void detachListeners(){
@@ -108,5 +110,27 @@ public class Home extends AppCompatActivity {
 		Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
 
 		handler.postDelayed(mRunnable, 2000);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.home_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+
+		switch (id){
+			case R.id.out:
+				firebaseAuth.signOut();
+				break;
+			case R.id.act:
+				startActivity(new Intent(Home.this, Account.class));
+				break;
+		}
+
+		return true;
 	}
 }

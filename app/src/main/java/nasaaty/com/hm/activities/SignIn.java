@@ -2,12 +2,10 @@ package nasaaty.com.hm.activities;
 
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,8 +23,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.UserInfo;
 
 import nasaaty.com.hm.R;
 
@@ -64,8 +62,15 @@ public class SignIn extends AppCompatActivity implements
 			public void onAuthStateChanged(@NonNull FirebaseAuth fireAuth) {
 				firebaseUser = fireAuth.getCurrentUser();
 				if (firebaseUser != null){
-					finish();
-					startActivity(new Intent(SignIn.this, Home.class));
+					FirebaseUserMetadata metadata = firebaseUser.getMetadata();
+					if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp())
+					{
+						//intro
+					}
+					else {
+						finish();
+						startActivity(new Intent(SignIn.this, Home.class));
+					}
 				}else {
 					Toast.makeText(SignIn.this, "sign in or create account", Toast.LENGTH_SHORT).show();
 				}

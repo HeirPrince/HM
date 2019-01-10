@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.franmontiel.fullscreendialog.FullScreenDialogFragment;
@@ -30,12 +31,14 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
 import nasaaty.com.hm.R;
+import nasaaty.com.hm.fragments.SignUpFragment;
 import nasaaty.com.hm.model.User;
 import nasaaty.com.hm.viewmodels.UserVModel;
 
 public class SignIn extends AppCompatActivity implements
 		GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-		View.OnClickListener {
+		View.OnClickListener, FullScreenDialogFragment.OnConfirmListener,
+		FullScreenDialogFragment.OnDiscardListener {
 
 	private static final int SIGNED_IN = 0;
 	private static final int STATE_SIGNING_IN = 1;
@@ -48,22 +51,26 @@ public class SignIn extends AppCompatActivity implements
 	private FirebaseAuth.AuthStateListener listener;
 	private FirebaseUser firebaseUser;
 	private UserVModel userVModel;
+	EditText input_mail, input_pwd;
 	private int mSignInProgress;
 	private PendingIntent mSignInIntent;
 
 	private SignInButton mSignInButton;
+	private FullScreenDialogFragment dialogFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_in);
 
+		input_mail = findViewById(R.id.input_email);
+		input_pwd = findViewById(R.id.input_password);
 		mSignInButton = findViewById(R.id.btnGgl);
 		mSignInButton.setOnClickListener(this);
 		userVModel = ViewModelProviders.of(this).get(UserVModel.class);
 
 		firebaseAuth = FirebaseAuth.getInstance();
-
+		
 		listener = new FirebaseAuth.AuthStateListener() {
 			@Override
 			public void onAuthStateChanged(@NonNull FirebaseAuth fireAuth) {
@@ -144,13 +151,18 @@ public class SignIn extends AppCompatActivity implements
 
 	public void signUp(View view) {
 
-		new FullScreenDialogFragment.Builder(SignIn.this)
+		final Bundle args = new Bundle();
+		args.putString(SignUpFragment.EXTRA_UID, "jj");
+
+		dialogFragment = new FullScreenDialogFragment.Builder(this)
 				.setTitle(R.string.dialog_title)
 				.setConfirmButton(R.string.dialog_positive_button)
-				.setOnConfirmListener(onConfirmListener)
-				.setOnDiscardListener(onDiscardListener)
-				.setContent(ContentFragment.class, argumentsBundle)
+				.setOnConfirmListener(this)
+				.setOnDiscardListener(this)
+				.setContent(SignUpFragment.class, args)
 				.build();
+
+		dialogFragment.show(getSupportFragmentManager(), "tg");
 
 	}
 
@@ -220,5 +232,15 @@ public class SignIn extends AppCompatActivity implements
 	@Override
 	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 		mSignInButton.setEnabled(false);
+	}
+
+	@Override
+	public void onConfirm(@Nullable Bundle result) {
+		
+	}
+
+	@Override
+	public void onDiscard() {
+
 	}
 }

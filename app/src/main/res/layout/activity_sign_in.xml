@@ -9,14 +9,14 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username"
-        android:id="@+id/input_username"/>
+        android:id="@+id/input_email"
+        android:hint="Email"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:layout_below="@id/input_username"
+        android:layout_below="@id/input_email"
         android:layout_marginTop="6dp"
         android:id="@+id/input_password"/>
 

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.franmontiel.fullscreendialog.FullScreenDialogFragment;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -71,7 +72,8 @@ public class SignIn extends AppCompatActivity implements
 					FirebaseUserMetadata metadata = firebaseUser.getMetadata();
 					if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp())
 					{
-						//intro
+						Toast.makeText(SignIn.this, "first time", Toast.LENGTH_SHORT).show();
+						saveUser(firebaseUser);
 					}
 					else {
 						finish();
@@ -108,7 +110,7 @@ public class SignIn extends AppCompatActivity implements
 		firebaseAuth.addAuthStateListener(listener);
 	}
 
-	private void updateUI(FirebaseUser firebaseUser) {
+	private void saveUser(FirebaseUser firebaseUser) {
 
 		for (UserInfo info : firebaseUser.getProviderData()){
 			User user = new User();
@@ -116,19 +118,19 @@ public class SignIn extends AppCompatActivity implements
 			user.setUid(info.getUid());
 			user.setName(info.getDisplayName());
 			user.setEmail(info.getEmail());
-			user.setPhotoUrl(info.getPhotoUrl());
+			user.setPhotoUrl(info.getPhotoUrl().toString());
 
 			userVModel.insertUser(user, new UserVModel.onUserSaved() {
 				@Override
 				public void done(Boolean yes) {
 					if (yes){
 						Toast.makeText(SignIn.this, "user saved to db", Toast.LENGTH_SHORT).show();
-						startActivity(new Intent(SignIn.this, Home.class));
 					}
 					else
 						Toast.makeText(SignIn.this, "error saving user to db, try again", Toast.LENGTH_SHORT).show();
 				}
 			});
+			break;
 		}
 
 	}
@@ -141,6 +143,14 @@ public class SignIn extends AppCompatActivity implements
 	}
 
 	public void signUp(View view) {
+
+		new FullScreenDialogFragment.Builder(SignIn.this)
+				.setTitle(R.string.dialog_title)
+				.setConfirmButton(R.string.dialog_positive_button)
+				.setOnConfirmListener(onConfirmListener)
+				.setOnDiscardListener(onDiscardListener)
+				.setContent(ContentFragment.class, argumentsBundle)
+				.build();
 
 	}
 
@@ -184,8 +194,8 @@ public class SignIn extends AppCompatActivity implements
 					public void onComplete(@NonNull Task<AuthResult> task) {
 						if (task.isSuccessful()) {
 							// Sign in success
-							FirebaseUser user = firebaseAuth.getCurrentUser();
-							updateUI(user);
+							finish();
+							startActivity(new Intent(SignIn.this, Home.class));
 						} else {
 							// Sign in fails
 							Toast.makeText(getApplicationContext(), "Authentication failed!",

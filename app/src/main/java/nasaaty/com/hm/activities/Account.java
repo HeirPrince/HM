@@ -43,6 +43,18 @@ public class Account extends AppCompatActivity {
 				username.setText(info.getDisplayName());
 				email.setText(info.getEmail());
 				Picasso.get().load(info.getPhotoUrl()).into(user_image);
+
+				vModel.getUserDetails(info.getUid()).observe(this, new Observer<DocumentSnapshot>() {
+					@Override
+					public void onChanged(@Nullable DocumentSnapshot documentSnapshot) {
+						if (documentSnapshot.exists()){
+							User user = documentSnapshot.toObject(User.class);
+							Toast.makeText(Account.this, user.getName(), Toast.LENGTH_LONG).show();
+						}else {
+							Toast.makeText(Account.this, "document not found", Toast.LENGTH_SHORT).show();
+						}
+					}
+				});
 			}
 		}
 	}
@@ -53,16 +65,5 @@ public class Account extends AppCompatActivity {
 		user_image = findViewById(R.id.user_image);
 
 		vModel = ViewModelProviders.of(this).get(UserVModel.class);
-		vModel.getUserDetails(firebaseUser.getUid()).observe(this, new Observer<DocumentSnapshot>() {
-			@Override
-			public void onChanged(@Nullable DocumentSnapshot documentSnapshot) {
-				if (documentSnapshot.exists()){
-					User user = documentSnapshot.toObject(User.class);
-					Toast.makeText(Account.this, user.getName(), Toast.LENGTH_LONG).show();
-				}else {
-					Toast.makeText(Account.this, "document not found", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
 	}
 }

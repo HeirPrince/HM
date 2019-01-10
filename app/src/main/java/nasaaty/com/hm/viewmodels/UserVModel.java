@@ -10,7 +10,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,12 +37,12 @@ public class UserVModel extends AndroidViewModel {
 	}
 
 	public void insertUser(User user, onUserSaved callback){
-		CollectionReference userCol = firestore.collection("users");
-		new insertUserAsync(hahaDB, userCol, callback).execute(user);
+		DocumentReference userRef = firestore.collection("users").document(user.getUid());
+		new insertUserAsync(hahaDB, userRef, callback).execute(user);
 	}
 
 	public LiveData<DocumentSnapshot> getUserDetails(String uid) {
-		DocumentReference userRef = FirebaseFirestore.getInstance().collection("users").document(uid);
+		DocumentReference userRef = firestore.collection("users").document(uid);
 		this.liveData = new UserQLiveData(userRef);
 		return liveData;
 	}
@@ -57,10 +56,10 @@ public class UserVModel extends AndroidViewModel {
 
 		private HahaDB hahaDBase;
 		private onUserSaved call;
-		private CollectionReference userCollection;
+		private DocumentReference userRef;
 
-		public insertUserAsync(HahaDB hahaDB, CollectionReference userCol, onUserSaved callback) {
-			userCollection = userCol;
+		public insertUserAsync(HahaDB hahaDB, DocumentReference userRef, onUserSaved callback) {
+			this.userRef = userRef;
 			hahaDBase = hahaDB;
 			call = callback;
 		}
@@ -68,12 +67,12 @@ public class UserVModel extends AndroidViewModel {
 		@Override
 		protected Void doInBackground(final User... users) {
 			if (users[0] != null){
-				userCollection.add(users[0])
-						.addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+				hahaDBase.userEntity().addUser(users[0]);
+				userRef.set(users[0])
+						.addOnCompleteListener(new OnCompleteListener<Void>() {
 							@Override
-							public void onComplete(@NonNull Task<DocumentReference> task) {
+							public void onComplete(@NonNull Task<Void> task) {
 								if (task.isSuccessful()){
-									hahaDBase.userEntity().addUser(users[0]);
 									call.done(true);
 								}else {
 									call.done(false);
@@ -81,7 +80,6 @@ public class UserVModel extends AndroidViewModel {
 							}
 						});
 			}
-			call.done(false);
 			return null;
 		}
 	}

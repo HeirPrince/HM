@@ -2,8 +2,6 @@ package nasaaty.com.hm.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverters;
-import android.net.Uri;
 
 @Entity
 public class User {
@@ -13,10 +11,9 @@ public class User {
 	private String uid;
 	private String name;
 	private String email;
-	@TypeConverters(UriConverter.class)
-	private Uri photoUrl;
+	private String photoUrl;
 
-	public User(String uid, String name, String email, Uri photoUrl) {
+	public User(String uid, String name, String email, String photoUrl) {
 		this.uid = uid;
 		this.name = name;
 		this.email = email;
@@ -58,11 +55,11 @@ public class User {
 		this.email = email;
 	}
 
-	public Uri getPhotoUrl() {
+	public String getPhotoUrl() {
 		return photoUrl;
 	}
 
-	public void setPhotoUrl(Uri photoUrl) {
+	public void setPhotoUrl(String photoUrl) {
 		this.photoUrl = photoUrl;
 	}
 }

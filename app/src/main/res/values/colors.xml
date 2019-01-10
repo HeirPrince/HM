@@ -10,4 +10,5 @@
     <color name="screen_2">#8BC34A</color>
     <color name="screen_3">#CDDC39</color>
     <color name="screen_4">#FFEB3B</color>
+    <color name="color_dark">#263238</color>
 </resources>

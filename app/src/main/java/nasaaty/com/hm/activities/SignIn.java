@@ -1,6 +1,7 @@
 package nasaaty.com.hm.activities;
 
 import android.app.PendingIntent;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,8 +26,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
 
 import nasaaty.com.hm.R;
+import nasaaty.com.hm.model.User;
+import nasaaty.com.hm.viewmodels.UserVModel;
 
 public class SignIn extends AppCompatActivity implements
 		GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -42,6 +46,7 @@ public class SignIn extends AppCompatActivity implements
 	private FirebaseAuth firebaseAuth;
 	private FirebaseAuth.AuthStateListener listener;
 	private FirebaseUser firebaseUser;
+	private UserVModel userVModel;
 	private int mSignInProgress;
 	private PendingIntent mSignInIntent;
 
@@ -54,6 +59,7 @@ public class SignIn extends AppCompatActivity implements
 
 		mSignInButton = findViewById(R.id.btnGgl);
 		mSignInButton.setOnClickListener(this);
+		userVModel = ViewModelProviders.of(this).get(UserVModel.class);
 
 		firebaseAuth = FirebaseAuth.getInstance();
 
@@ -103,7 +109,28 @@ public class SignIn extends AppCompatActivity implements
 	}
 
 	private void updateUI(FirebaseUser firebaseUser) {
-		startActivity(new Intent(SignIn.this, Home.class));
+
+		for (UserInfo info : firebaseUser.getProviderData()){
+			User user = new User();
+
+			user.setUid(info.getUid());
+			user.setName(info.getDisplayName());
+			user.setEmail(info.getEmail());
+			user.setPhotoUrl(info.getPhotoUrl());
+
+			userVModel.insertUser(user, new UserVModel.onUserSaved() {
+				@Override
+				public void done(Boolean yes) {
+					if (yes){
+						Toast.makeText(SignIn.this, "user saved to db", Toast.LENGTH_SHORT).show();
+						startActivity(new Intent(SignIn.this, Home.class));
+					}
+					else
+						Toast.makeText(SignIn.this, "error saving user to db, try again", Toast.LENGTH_SHORT).show();
+				}
+			});
+		}
+
 	}
 
 	@Override

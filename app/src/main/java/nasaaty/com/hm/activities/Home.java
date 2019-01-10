@@ -133,4 +133,8 @@ public class Home extends AppCompatActivity {
 
 		return true;
 	}
+
+	public void addP(View view) {
+		startActivity(new Intent(Home.this, AddProduct.class));
+	}
 }

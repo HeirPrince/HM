@@ -35,6 +35,7 @@ import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import nasaaty.com.hm.R;
+import nasaaty.com.hm.activities.Home;
 import nasaaty.com.hm.model.User;
 import nasaaty.com.hm.viewmodels.UserVModel;
 
@@ -123,7 +124,7 @@ public class SignUpFragment extends Fragment implements FullScreenDialogContent 
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		dialogController.setConfirmButtonEnabled(!input_name.getText().toString().isEmpty());
+		dialogController.setConfirmButtonEnabled(!input_name.getText().toString().isEmpty()&& !input_email.getText().toString().isEmpty() && !input_password.getText().toString().isEmpty());
 		input_name.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -149,29 +150,37 @@ public class SignUpFragment extends Fragment implements FullScreenDialogContent 
 	@Override
 	public boolean onConfirmClick(final FullScreenDialogController dialogController) {
 
-		final User user = new User();
-		user.setName(input_name.getText().toString());
-		user.setPhotoUrl(uri.toString());
-		user.setEmail(input_email.getText().toString());
-
 		//auth with email
-		firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), input_password.getText().toString())
+		firebaseAuth.createUserWithEmailAndPassword(input_email.getText().toString(), input_password.getText().toString())
 				.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 					@Override
 					public void onComplete(@NonNull Task<AuthResult> task) {
 						if (task.isSuccessful()){
-							//TODO insert full user to proceed
 							Toast.makeText(getContext(), "Account created successfully", Toast.LENGTH_SHORT).show();
-							uploadImage(uri);
-							vModel.insertUser(user, new UserVModel.onUserSaved() {
-								@Override
-								public void done(Boolean yes) {
-									if (yes)
-										Toast.makeText(getContext(), "Account saved locally", Toast.LENGTH_SHORT).show();
-									else
-										Toast.makeText(getContext(), "local account failed", Toast.LENGTH_SHORT).show();
-								}
-							});
+
+//							User user = new User();
+//							user.setName(input_name.getText().toString());
+//							user.setPhotoUrl(uri.toString());
+//							user.setEmail(input_email.getText().toString());
+//							user.setUid(firebaseAuth.getCurrentUser().getUid());
+//							uploadImage(uri);
+//
+//							vModel.insertUser(user, new UserVModel.onUserSaved() {
+//								@Override
+//								public void done(Boolean yes) {
+//									if (yes) {
+
+										getActivity().finish();
+										Intent i = new Intent(getActivity(), Home.class);
+										i.putExtra("type", 2);
+										i.putExtra("uname", input_name.getText().toString());
+										i.putExtra("image", uri.toString());
+										startActivity(i);
+//									}
+//									else
+//										Toast.makeText(getContext(), "local account failed", Toast.LENGTH_SHORT).show();
+//								}
+//							});
 						}else {
 							Toast.makeText(getContext(), "failed creating account", Toast.LENGTH_SHORT).show();
 						}
@@ -240,25 +249,5 @@ public class SignUpFragment extends Fragment implements FullScreenDialogContent 
 				}
 			}
 		}
-	}
-
-	public void uploadImage(Uri uri){
-		StorageReference userRef = storage.getReference().child(getArguments().getString(EXTRA_UID));
-
-		userRef.putFile(uri)
-				.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-					@Override
-					public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-						if (task.isSuccessful()){
-							Toast.makeText(getContext(), "image uploaded", Toast.LENGTH_SHORT).show();
-						}
-					}
-				})
-				.addOnFailureListener(new OnFailureListener() {
-					@Override
-					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(getContext(), "upload failed with "+e.getMessage(), Toast.LENGTH_SHORT).show();
-					}
-				});
 	}
 }

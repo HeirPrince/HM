@@ -37,11 +37,16 @@ dependencies {
     implementation 'com.github.apl-devs:appintro:v4.2.3'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.shadowalker77:wp7progressbar:1.0.5'
+    implementation 'com.github.blennerSilva:AwesomeDialog:2.0.5'
 
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
     implementation 'com.google.firebase:firebase-firestore:17.1.5'
     implementation 'com.google.firebase:firebase-storage:16.0.5'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:4.3.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
+
 }
 apply plugin: 'com.google.gms.google-services'

@@ -1,6 +1,7 @@
 package nasaaty.com.hm.activities;
 
 import android.app.PendingIntent;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -29,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import nasaaty.com.hm.R;
 import nasaaty.com.hm.fragments.SignUpFragment;
@@ -76,16 +79,10 @@ public class SignIn extends AppCompatActivity implements
 			public void onAuthStateChanged(@NonNull FirebaseAuth fireAuth) {
 				firebaseUser = fireAuth.getCurrentUser();
 				if (firebaseUser != null){
-					FirebaseUserMetadata metadata = firebaseUser.getMetadata();
-					if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp())
-					{
-						Toast.makeText(SignIn.this, "first time", Toast.LENGTH_SHORT).show();
-						saveUser(firebaseUser);
-					}
-					else {
-						finish();
-						startActivity(new Intent(SignIn.this, Home.class));
-					}
+					finish();
+					Intent i = new Intent(SignIn.this, Home.class);
+					i.putExtra("type", 1);
+					startActivity(i);
 				}else {
 					Toast.makeText(SignIn.this, "sign in or create account", Toast.LENGTH_SHORT).show();
 				}
@@ -117,31 +114,6 @@ public class SignIn extends AppCompatActivity implements
 		firebaseAuth.addAuthStateListener(listener);
 	}
 
-	private void saveUser(FirebaseUser firebaseUser) {
-
-		for (UserInfo info : firebaseUser.getProviderData()){
-			User user = new User();
-
-			user.setUid(info.getUid());
-			user.setName(info.getDisplayName());
-			user.setEmail(info.getEmail());
-			user.setPhotoUrl(info.getPhotoUrl().toString());
-
-			userVModel.insertUser(user, new UserVModel.onUserSaved() {
-				@Override
-				public void done(Boolean yes) {
-					if (yes){
-						Toast.makeText(SignIn.this, "user saved to db", Toast.LENGTH_SHORT).show();
-					}
-					else
-						Toast.makeText(SignIn.this, "error saving user to db, try again", Toast.LENGTH_SHORT).show();
-				}
-			});
-			break;
-		}
-
-	}
-
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -167,7 +139,28 @@ public class SignIn extends AppCompatActivity implements
 	}
 
 	public void signIn(View view) {
-		
+
+		String email = input_mail.getText().toString();
+		String password = input_pwd.getText().toString();
+
+		firebaseAuth.signInWithEmailAndPassword(email, password)
+				.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+					@Override
+					public void onComplete(@NonNull Task<AuthResult> task) {
+						Toast.makeText(SignIn.this, "Welcome back again", Toast.LENGTH_SHORT).show();
+						finish();
+						Intent i = new Intent(SignIn.this, Home.class);
+						i.putExtra("type", 1);
+						i.putExtra("provider", false);
+						startActivity(i);
+					}
+				})
+				.addOnFailureListener(new OnFailureListener() {
+					@Override
+					public void onFailure(@NonNull Exception e) {
+						Toast.makeText(SignIn.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+					}
+				});
 	}
 
 	@Override
@@ -207,7 +200,10 @@ public class SignIn extends AppCompatActivity implements
 						if (task.isSuccessful()) {
 							// Sign in success
 							finish();
-							startActivity(new Intent(SignIn.this, Home.class));
+							Intent i = new Intent(SignIn.this, Home.class);
+							i.putExtra("type", 1);
+							i.putExtra("provider", true);
+							startActivity(i);
 						} else {
 							// Sign in fails
 							Toast.makeText(getApplicationContext(), "Authentication failed!",

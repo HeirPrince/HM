@@ -12,23 +12,17 @@ public class User {
 	private String name;
 	private String email;
 	private String photoUrl;
+	private String providerID;
 
-	public User(String uid, String name, String email, String photoUrl) {
+	public User(String uid, String name, String email, String photoUrl, String providerID) {
 		this.uid = uid;
 		this.name = name;
 		this.email = email;
 		this.photoUrl = photoUrl;
+		this.providerID = providerID;
 	}
 
 	public User() {
-	}
-
-	public String getUid() {
-		return uid;
-	}
-
-	public void setUid(String uid) {
-		this.uid = uid;
 	}
 
 	public int getId() {
@@ -37,6 +31,14 @@ public class User {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 
 	public String getName() {
@@ -61,5 +63,13 @@ public class User {
 
 	public void setPhotoUrl(String photoUrl) {
 		this.photoUrl = photoUrl;
+	}
+
+	public String getProviderID() {
+		return providerID;
+	}
+
+	public void setProviderID(String providerID) {
+		this.providerID = providerID;
 	}
 }

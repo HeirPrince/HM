@@ -3,8 +3,7 @@
     package="nasaaty.com.hm">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission
-        android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -14,16 +13,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.MainActivity">
+
+        </activity>
+        <activity android:name=".activities.SignIn" />
+        <activity android:name=".activities.Home" />
+        <activity android:name=".activities.AddProduct" />
+        <activity android:name=".activities.Account" />
+        <activity android:name=".activities.BaseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.SignIn" />
-        <activity android:name=".activities.Home" />
-        <activity android:name=".activities.AddProduct" />
-        <activity android:name=".activities.Account"></activity>
     </application>
 
 </manifest>

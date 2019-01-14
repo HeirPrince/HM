@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.awesomedialog.blennersilva.awesomedialoglibrary.AwesomeProgressDialog;
 import com.awesomedialog.blennersilva.awesomedialoglibrary.interfaces.Closure;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -32,6 +33,7 @@ import com.google.firebase.storage.UploadTask;
 
 import nasaaty.com.hm.R;
 import nasaaty.com.hm.model.User;
+import nasaaty.com.hm.utils.DialogUtilities;
 import nasaaty.com.hm.viewmodels.UserVModel;
 
 public class Home extends AppCompatActivity {
@@ -43,7 +45,7 @@ public class Home extends AppCompatActivity {
 	boolean doubleBackToExitPressedOnce = false;
 	private Handler handler = new Handler();
 	private UserVModel vModel;
-	private AwesomeProgressDialog progressDialog;
+	private DialogUtilities dialogUtilities;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,7 @@ public class Home extends AppCompatActivity {
 		setContentView(R.layout.activity_home);
 		username = findViewById(R.id.username);
 		vModel = ViewModelProviders.of(this).get(UserVModel.class);
-		setupDialog();
+		dialogUtilities = new DialogUtilities(this);
 
 		firebaseAuth = FirebaseAuth.getInstance();
 		listener = new FirebaseAuth.AuthStateListener() {
@@ -60,108 +62,27 @@ public class Home extends AppCompatActivity {
 				currentUser = fireAuth.getCurrentUser();
 
 				if (currentUser != null){
-					if (getIntent().getIntExtra("type", 0) == 1){
+					FirebaseUserMetadata metadata = currentUser.getMetadata();
+					if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
+						// The user is new, show them a fancy intro screen!
+						User newUser = new User();
+						newUser.setUid(currentUser.getUid());
+						newUser.setName(currentUser.getDisplayName());
+						newUser.setEmail(currentUser.getEmail());
+						newUser.setPhotoUrl(currentUser.getPhotoUrl().toString());
+						newUser.setProviderID(currentUser.getProviderId());
 
-						if (!getIntent().getBooleanExtra("provider", false)){
-							FirebaseUserMetadata metadata = currentUser.getMetadata();
-							if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp())
-							{
-								final User user = new User();
-								user.setName(getIntent().getStringExtra("uname"));
-								user.setEmail(currentUser.getEmail());
-								user.setUid(currentUser.getUid());
-								user.setProviderID("email");
-
-								vModel.insertUser(user, new UserVModel.onUserSaved() {
-									@Override
-									public void done(Boolean yes) {
-										if (yes) {
-											updateUserImage(user.getUid(), getIntent().getStringExtra("image"));
-											progressDialog.hide();
-
-										}
-									}
-								});
+						vModel.insertUser(newUser, new UserVModel.onUserSaved() {
+							@Override
+							public void done(Boolean yes) {
+								dialogUtilities.showSuccessDialog("Haha", "Hey "+currentUser.getDisplayName()+" welcome to HaHa");
 							}
-							else {
-								Toast.makeText(Home.this, "Welcome back", Toast.LENGTH_SHORT).show();
-							}
-						}else {
-							for (final UserInfo profile : currentUser.getProviderData()) {
-								// Id of the provider (ex: google.com)
-								String providerId = profile.getProviderId();
-
-								// UID specific to the provider
-								String uid = profile.getUid();
-
-								// Name, email address, and profile photo Url
-								String name = profile.getDisplayName();
-								String email = profile.getEmail();
-								Uri photoURl = profile.getPhotoUrl();
-
-								username.setText(name);
-
-								FirebaseUserMetadata metadata = currentUser.getMetadata();
-								if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp())
-								{
-									final User user = new User();
-									user.setName(getIntent().getStringExtra("uname"));
-									user.setEmail(email);
-									user.setUid(uid);
-									user.setProviderID(providerId);
-									user.setPhotoUrl(photoURl.toString());
-
-									vModel.insertUser(user, new UserVModel.onUserSaved() {
-										@Override
-										public void done(Boolean yes) {
-											if (yes) {
-												updateUserImage(currentUser.getUid(), getIntent().getStringExtra("image"));
-												progressDialog.hide();
-
-											}
-										}
-									});
-								}
-								else {
-									Toast.makeText(Home.this, "Welcome back", Toast.LENGTH_SHORT).show();
-								}
-								break;
-							}
-						}
+						});
 
 
-
-					}else if (getIntent().getIntExtra("type", 0) == 2){
-						Toast.makeText(Home.this, "sign up", Toast.LENGTH_SHORT).show();
-
-						FirebaseUserMetadata metadata = currentUser.getMetadata();
-						if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp())
-						{
-							final User user = new User();
-							user.setName(getIntent().getStringExtra("uname"));
-							user.setEmail(currentUser.getEmail());
-							user.setUid(currentUser.getUid());
-							user.setProviderID("email");
-
-							vModel.insertUser(user, new UserVModel.onUserSaved() {
-								@Override
-								public void done(Boolean yes) {
-									if (yes) {
-										updateUserImage(currentUser.getUid(), getIntent().getStringExtra("image"));
-
-										progressDialog.hide();
-
-									}
-								}
-							});
-						}
-						else {
-							Toast.makeText(Home.this, "Welcome back", Toast.LENGTH_SHORT).show();
-						}
-
-					}else {
-						//invalid intent
-						Toast.makeText(Home.this, "invalid intent", Toast.LENGTH_SHORT).show();
+					} else {
+						// This is an existing user, show them a welcome back screen.
+						dialogUtilities.showSuccessDialog("Welcome back", "Happy to see u back "+currentUser.getDisplayName());
 					}
 				}else {
 					finish();
@@ -172,7 +93,6 @@ public class Home extends AppCompatActivity {
 	}
 
 	private void updateUserImage(final String uid, final String image) {
-		progressDialog.setMessage("Saving Profile Data");
 		FirebaseFirestore.getInstance().collection("users").document(uid)
 				.update("photoUrl", image)
 				.addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -193,7 +113,6 @@ public class Home extends AppCompatActivity {
 					public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
 						if (task.isSuccessful()){
 							Toast.makeText(Home.this, "image uploaded", Toast.LENGTH_SHORT).show();
-							progressDialog.hide();
 						}
 					}
 				})
@@ -205,14 +124,6 @@ public class Home extends AppCompatActivity {
 				});
 	}
 
-	private void setupDialog() {
-		progressDialog = new AwesomeProgressDialog(this);
-		progressDialog.setTitle(R.string.app_name)
-				.setMessage("Creating account")
-				.setColoredCircle(R.color.dialogNoticeBackgroundColor)
-				.setDialogIconAndColor(R.drawable.ic_notice, R.color.white)
-				.setCancelable(false);
-	}
 
 	public void signOut(View view) {
 
@@ -276,9 +187,17 @@ public class Home extends AppCompatActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 
-		switch (id){
+		switch (id) {
 			case R.id.out:
-				firebaseAuth.signOut();
+				AuthUI.getInstance()
+						.signOut(this)
+						.addOnCompleteListener(new OnCompleteListener<Void>() {
+							public void onComplete(@NonNull Task<Void> task) {
+								// user is now signed out
+								startActivity(new Intent(Home.this, BaseActivity.class));
+								finish();
+							}
+						});
 				break;
 			case R.id.act:
 				startActivity(new Intent(Home.this, Account.class));
@@ -295,6 +214,5 @@ public class Home extends AppCompatActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		progressDialog.hide();
 	}
 }

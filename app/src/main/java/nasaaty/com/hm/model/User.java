@@ -12,17 +12,19 @@ public class User {
 	private String name;
 	private String email;
 	private String photoUrl;
+	private String phoneNum;
 	private String providerID;
 
-	public User(String uid, String name, String email, String photoUrl, String providerID) {
+	public User() {
+	}
+
+	public User(String uid, String name, String email, String photoUrl, String phoneNum, String providerID) {
 		this.uid = uid;
 		this.name = name;
 		this.email = email;
 		this.photoUrl = photoUrl;
+		this.phoneNum = phoneNum;
 		this.providerID = providerID;
-	}
-
-	public User() {
 	}
 
 	public int getId() {
@@ -63,6 +65,14 @@ public class User {
 
 	public void setPhotoUrl(String photoUrl) {
 		this.photoUrl = photoUrl;
+	}
+
+	public String getPhoneNum() {
+		return phoneNum;
+	}
+
+	public void setPhoneNum(String phoneNum) {
+		this.phoneNum = phoneNum;
 	}
 
 	public String getProviderID() {

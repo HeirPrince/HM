@@ -7,4 +7,7 @@
     <string name="dialog_positive_button">Sign Up</string>
     <string name="discard_confirmation_title">Sign up with Email</string>
     <string name="discard_confirmation_message">Are you sure you want to discard changes?</string>
+    <string name="dialog_title_edit">Edit Account</string>
+    <string name="dialog_positive_button_edit">DONE</string>
+    <string name="dialog_positive_button_done">Done</string>
 </resources>

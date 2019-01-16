@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,17 +66,38 @@ public class Home extends AppCompatActivity {
 					FirebaseUserMetadata metadata = currentUser.getMetadata();
 					if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
 						// The user is new, show them a fancy intro screen!
-						User newUser = new User();
+						final User newUser = new User();
 						newUser.setUid(currentUser.getUid());
 						newUser.setName(currentUser.getDisplayName());
-						newUser.setEmail(currentUser.getEmail());
-						newUser.setPhotoUrl(currentUser.getPhotoUrl().toString());
+
+						if (currentUser.getPhotoUrl() == null){
+							newUser.setPhotoUrl("");
+						}else {
+							newUser.setPhotoUrl(currentUser.getPhotoUrl().toString());
+						}
+
+						if (!TextUtils.isEmpty(currentUser.getEmail())){
+							newUser.setEmail(currentUser.getEmail());
+						}
+
 						newUser.setProviderID(currentUser.getProviderId());
 
-						vModel.insertUser(newUser, new UserVModel.onUserSaved() {
+						vModel.getUserDetails(newUser.getUid()).observe(Home.this, new Observer<DocumentSnapshot>() {
 							@Override
-							public void done(Boolean yes) {
-								dialogUtilities.showSuccessDialog("Haha", "Hey "+currentUser.getDisplayName()+" welcome to HaHa");
+							public void onChanged(@Nullable DocumentSnapshot documentSnapshot) {
+								User user = documentSnapshot.toObject(User.class);
+								if (user == null) {
+									//user doesn't exist
+									vModel.insertUser(newUser, new UserVModel.onUserSaved() {
+										@Override
+										public void done(Boolean yes) {
+											dialogUtilities.showSuccessDialog("Haha", "Hey "+currentUser.getDisplayName()+" welcome to HaHa");
+										}
+									});
+								}else {
+									//user exists do nothing
+									return;
+								}
 							}
 						});
 
@@ -92,37 +114,37 @@ public class Home extends AppCompatActivity {
 		};
 	}
 
-	private void updateUserImage(final String uid, final String image) {
-		FirebaseFirestore.getInstance().collection("users").document(uid)
-				.update("photoUrl", image)
-				.addOnCompleteListener(new OnCompleteListener<Void>() {
-					@Override
-					public void onComplete(@NonNull Task<Void> task) {
-						Toast.makeText(Home.this, image+" "+uid, Toast.LENGTH_LONG).show();
-//						uploadProfileImage(Uri.parse(image), uid);
-					}
-				});
-	}
-
-	public void uploadProfileImage(Uri uri, String uid){
-		StorageReference userRef = FirebaseStorage.getInstance().getReference().child(uid);
-
-		userRef.putFile(uri)
-				.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-					@Override
-					public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-						if (task.isSuccessful()){
-							Toast.makeText(Home.this, "image uploaded", Toast.LENGTH_SHORT).show();
-						}
-					}
-				})
-				.addOnFailureListener(new OnFailureListener() {
-					@Override
-					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(Home.this, "upload failed with "+e.getMessage(), Toast.LENGTH_SHORT).show();
-					}
-				});
-	}
+//	private void updateUserImage(final String uid, final String image) {
+//		FirebaseFirestore.getInstance().collection("users").document(uid)
+//				.update("photoUrl", image)
+//				.addOnCompleteListener(new OnCompleteListener<Void>() {
+//					@Override
+//					public void onComplete(@NonNull Task<Void> task) {
+//						Toast.makeText(Home.this, image+" "+uid, Toast.LENGTH_LONG).show();
+////						uploadProfileImage(Uri.parse(image), uid);
+//					}
+//				});
+//	}
+//
+//	public void uploadProfileImage(Uri uri, String uid){
+//		StorageReference userRef = FirebaseStorage.getInstance().getReference().child(uid);
+//
+//		userRef.putFile(uri)
+//				.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+//					@Override
+//					public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+//						if (task.isSuccessful()){
+//							Toast.makeText(Home.this, "image uploaded", Toast.LENGTH_SHORT).show();
+//						}
+//					}
+//				})
+//				.addOnFailureListener(new OnFailureListener() {
+//					@Override
+//					public void onFailure(@NonNull Exception e) {
+//						Toast.makeText(Home.this, "upload failed with "+e.getMessage(), Toast.LENGTH_SHORT).show();
+//					}
+//				});
+//	}
 
 
 	public void signOut(View view) {

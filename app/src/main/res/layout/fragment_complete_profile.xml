@@ -10,7 +10,8 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:id="@+id/user_image"/>
+        android:id="@+id/user_image"
+        android:src="@drawable/vector_avatar"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -26,25 +27,11 @@
         android:layout_marginTop="10dp"
         android:id="@+id/email"/>
 
-    <RelativeLayout
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="782085695"
-            android:id="@+id/phone"
-            android:layout_centerVertical="true"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="Change"/>
-
-    </RelativeLayout>
+        android:id="@+id/phone"
+        android:hint="Phone number"
+        android:layout_marginTop="10dp"/>
 
 </LinearLayout>

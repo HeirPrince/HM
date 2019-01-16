@@ -70,26 +70,63 @@ public class Account extends AppCompatActivity {
 
 	private void bindViews() {
 		FragmentManager fragmentManager = getSupportFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		UserFragment userFragment = new UserFragment();
-		fragmentTransaction.add(R.id.prof_container, userFragment);
+		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		
 
 		vModel = ViewModelProviders.of(this).get(UserVModel.class);
 
 		if (firebaseUser != null){
-			for (UserInfo info : firebaseUser.getProviderData()){
-				User user = new User();
-				user.setEmail(info.getEmail());
-				user.setName(info.getDisplayName());
-				user.setPhotoUrl(info.getPhotoUrl().toString());
-				user.setUid(info.getUid());
-				user.setPhoneNum(info.getPhoneNumber());
-				user.setProviderID(info.getProviderId());
 
-				setUser(user, fragmentTransaction);
-				break;
-			}
+			vModel.getUserDetails(firebaseUser.getUid()).observe(this, new Observer<DocumentSnapshot>() {
+				@Override
+				public void onChanged(@Nullable DocumentSnapshot documentSnapshot) {
+					User user = documentSnapshot.toObject(User.class);
+					if (user != null){
+						//get user from db
+						UserFragment myFrag = new UserFragment();
+						myFrag.setArguments(getBundle(user));
+						fragmentTransaction.replace(R.id.prof_container, myFrag);
+
+					}else {
+						//get user from firebase
+						for (final UserInfo info : firebaseUser.getProviderData()){
+							final User fUser = new User();
+							fUser.setEmail(info.getEmail());
+							fUser.setName(info.getDisplayName());
+
+							if (info.getPhotoUrl() == null){
+								//search image in db
+								vModel.getUserDetails(info.getUid()).observe(Account.this, new Observer<DocumentSnapshot>() {
+									@Override
+									public void onChanged(@Nullable DocumentSnapshot documentSnapshot) {
+										User user1 = documentSnapshot.toObject(User.class);
+										if (user1 != null){
+											String url = user1.getPhotoUrl();
+											fUser.setPhotoUrl(url);
+										}else { //not found
+											fUser.setPhotoUrl("none");
+										}
+									}
+								});
+							}else {
+								String url = info.getPhotoUrl().toString();
+								fUser.setPhotoUrl(url);
+							}
+
+							fUser.setUid(info.getUid());
+							fUser.setPhoneNum(info.getPhoneNumber());
+							fUser.setProviderID(info.getProviderId());
+
+							UserFragment myFrag = new UserFragment();
+							myFrag.setArguments(getBundle(user));
+							fragmentTransaction.replace(R.id.prof_container, myFrag);
+
+							break;
+						}
+					}
+					fragmentTransaction.commit();
+				}
+			});
 
 
 		} else {
@@ -97,19 +134,16 @@ public class Account extends AppCompatActivity {
 		}
 	}
 
-	private void setUser(User user, FragmentTransaction fragmentTransaction) {
+	@NonNull
+	public Bundle getBundle(User user) {
 		Bundle bundle = new Bundle();
 		bundle.putString("uname", user.getName());
-		bundle.putString("mail", user.getEmail());
+		bundle.putString("email", user.getEmail());
 		bundle.putString("url", user.getPhotoUrl());
 		bundle.putString("uid", user.getUid());
 		bundle.putString("phone", user.getPhoneNum());
 		bundle.putString("provider", user.getProviderID());
-
-		UserFragment myFrag = new UserFragment();
-		myFrag.setArguments(bundle);
-		fragmentTransaction.replace(R.id.prof_container, myFrag);
-		fragmentTransaction.commit();
+		return bundle;
 	}
 
 

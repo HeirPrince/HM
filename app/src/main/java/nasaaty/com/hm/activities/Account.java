@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +33,15 @@ public class Account extends AppCompatActivity {
 	FirebaseAuth.AuthStateListener listener;
 	FirebaseUser firebaseUser;
 	UserVModel vModel;
+	Toolbar toolbar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_account);
-
+		toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		
 		firebaseAuth = FirebaseAuth.getInstance();
 		firebaseUser = firebaseAuth.getCurrentUser();
 		bindViews();
@@ -64,10 +68,6 @@ public class Account extends AppCompatActivity {
 		};
 	}
 
-	interface userDetails{
-		void User (User details);
-	}
-
 	private void bindViews() {
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -86,6 +86,7 @@ public class Account extends AppCompatActivity {
 						UserFragment myFrag = new UserFragment();
 						myFrag.setArguments(getBundle(user));
 						fragmentTransaction.replace(R.id.prof_container, myFrag);
+						fragmentTransaction.commit();
 
 					}else {
 						//get user from firebase
@@ -120,14 +121,13 @@ public class Account extends AppCompatActivity {
 							UserFragment myFrag = new UserFragment();
 							myFrag.setArguments(getBundle(user));
 							fragmentTransaction.replace(R.id.prof_container, myFrag);
+							fragmentTransaction.commit();
 
 							break;
 						}
 					}
-					fragmentTransaction.commit();
 				}
 			});
-
 
 		} else {
 			Toast.makeText(Account.this, "null", Toast.LENGTH_SHORT).show();

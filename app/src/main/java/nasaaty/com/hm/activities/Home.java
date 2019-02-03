@@ -9,6 +9,9 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,28 +35,45 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nasaaty.com.hm.R;
+import nasaaty.com.hm.adapters.ProductListAdapter;
+import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.model.User;
 import nasaaty.com.hm.utils.DialogUtilities;
+import nasaaty.com.hm.viewmodels.OrderVModel;
+import nasaaty.com.hm.viewmodels.ProductListVModel;
 import nasaaty.com.hm.viewmodels.UserVModel;
 
 public class Home extends AppCompatActivity {
 
-	TextView username;
+	Toolbar tb;
 	private FirebaseAuth firebaseAuth;
 	private FirebaseAuth.AuthStateListener listener;
 	private FirebaseUser currentUser;
 	boolean doubleBackToExitPressedOnce = false;
 	private Handler handler = new Handler();
 	private UserVModel vModel;
+	private ProductListVModel productListVModel;
+	private OrderVModel orderVModel;
 	private DialogUtilities dialogUtilities;
+	private ProductListAdapter adapter;
+
+	RecyclerView list;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
-		username = findViewById(R.id.username);
+		tb = findViewById(R.id.toolbar);
+		setSupportActionBar(tb);
+
+		list = findViewById(R.id.product_list);
 		vModel = ViewModelProviders.of(this).get(UserVModel.class);
+		productListVModel = ViewModelProviders.of(this).get(ProductListVModel.class);
+		orderVModel = ViewModelProviders.of(this).get(OrderVModel.class);
 		dialogUtilities = new DialogUtilities(this);
 
 		firebaseAuth = FirebaseAuth.getInstance();
@@ -94,8 +114,10 @@ public class Home extends AppCompatActivity {
 											dialogUtilities.showSuccessDialog("Haha", "Hey "+currentUser.getDisplayName()+" welcome to HaHa");
 										}
 									});
+									getData();
 								}else {
 									//user exists do nothing
+									getData();
 									return;
 								}
 							}
@@ -104,7 +126,8 @@ public class Home extends AppCompatActivity {
 
 					} else {
 						// This is an existing user, show them a welcome back screen.
-						dialogUtilities.showSuccessDialog("Welcome back", "Happy to see u back "+currentUser.getDisplayName());
+//						dialogUtilities.showSuccessDialog("Welcome back", "Happy to see u back "+currentUser.getDisplayName());
+						getData();
 					}
 				}else {
 					finish();
@@ -114,41 +137,23 @@ public class Home extends AppCompatActivity {
 		};
 	}
 
-//	private void updateUserImage(final String uid, final String image) {
-//		FirebaseFirestore.getInstance().collection("users").document(uid)
-//				.update("photoUrl", image)
-//				.addOnCompleteListener(new OnCompleteListener<Void>() {
-//					@Override
-//					public void onComplete(@NonNull Task<Void> task) {
-//						Toast.makeText(Home.this, image+" "+uid, Toast.LENGTH_LONG).show();
-////						uploadProfileImage(Uri.parse(image), uid);
-//					}
-//				});
-//	}
-//
-//	public void uploadProfileImage(Uri uri, String uid){
-//		StorageReference userRef = FirebaseStorage.getInstance().getReference().child(uid);
-//
-//		userRef.putFile(uri)
-//				.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-//					@Override
-//					public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-//						if (task.isSuccessful()){
-//							Toast.makeText(Home.this, "image uploaded", Toast.LENGTH_SHORT).show();
-//						}
-//					}
-//				})
-//				.addOnFailureListener(new OnFailureListener() {
-//					@Override
-//					public void onFailure(@NonNull Exception e) {
-//						Toast.makeText(Home.this, "upload failed with "+e.getMessage(), Toast.LENGTH_SHORT).show();
-//					}
-//				});
-//	}
+	private void getData() {
+		final List<Product> products = new ArrayList<>();
+		list.setLayoutManager(new LinearLayoutManager(this));
+		list.setHasFixedSize(true);
 
+		productListVModel.getProducts().observe(this, new Observer<DocumentSnapshot>() {
+			@Override
+			public void onChanged(@Nullable DocumentSnapshot documentSnapshot) {
+				if (documentSnapshot != null) {
+					Product product = documentSnapshot.toObject(Product.class);
+					products.add(product);
+					adapter = new ProductListAdapter(Home.this,products, orderVModel);
+				}
+			}
+		});
 
-	public void signOut(View view) {
-
+		list.setAdapter(adapter);
 	}
 
 	public void detachListeners(){
@@ -223,6 +228,9 @@ public class Home extends AppCompatActivity {
 				break;
 			case R.id.act:
 				startActivity(new Intent(Home.this, Account.class));
+				break;
+			case R.id.cart:
+				startActivity(new Intent(Home.this, Orders.class));
 				break;
 		}
 

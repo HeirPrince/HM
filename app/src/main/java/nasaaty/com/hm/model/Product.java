@@ -7,13 +7,21 @@ import android.arch.persistence.room.PrimaryKey;
 public class Product {
 	@PrimaryKey(autoGenerate = true)
 	private int id;
+	private String pid;
 
 	private String label;
+	private String description;
 	private int price;
 	private String owner;
 
-	public Product(String label, int price, String owner) {
+	public Product() {
+	}
+
+	public Product(int id, String pid, String label, String description, int price, String owner) {
+		this.id = id;
+		this.pid = pid;
 		this.label = label;
+		this.description = description;
 		this.price = price;
 		this.owner = owner;
 	}
@@ -26,12 +34,28 @@ public class Product {
 		this.id = id;
 	}
 
+	public String getPid() {
+		return pid;
+	}
+
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
+
 	public String getLabel() {
 		return label;
 	}
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public int getPrice() {

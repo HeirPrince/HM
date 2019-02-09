@@ -7,16 +7,21 @@ import android.arch.persistence.room.PrimaryKey;
 public class Order {
 	@PrimaryKey(autoGenerate = true)
 	private int id;
+
+	private String order_id;
 	private String product_id;
 	private String owner;
+	private int count;
 
 	public Order() {
 	}
 
-	public Order(int id, String product_id, String owner) {
+	public Order(int id, String order_id, String product_id, String owner, int count) {
 		this.id = id;
+		this.order_id = order_id;
 		this.product_id = product_id;
 		this.owner = owner;
+		this.count = count;
 	}
 
 	public int getId() {
@@ -25,6 +30,14 @@ public class Order {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(String order_id) {
+		this.order_id = order_id;
 	}
 
 	public String getProduct_id() {
@@ -41,5 +54,13 @@ public class Order {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 }

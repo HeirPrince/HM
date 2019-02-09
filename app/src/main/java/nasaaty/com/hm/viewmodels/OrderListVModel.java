@@ -4,7 +4,10 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -12,26 +15,25 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
+import nasaaty.com.hm.model.Order;
 import nasaaty.com.hm.room.HahaDB;
 import nasaaty.com.hm.utils.OrderQLiveData;
+import nasaaty.com.hm.utils.repos.OrderRepository;
 
 public class OrderListVModel extends AndroidViewModel {
 
-	private HahaDB hahaDB;
-	private OrderQLiveData liveData;
-
-	FirebaseFirestore firebaseFirestore;
+	private OrderRepository repository;
+	LiveData<List<Order>> orders;
 
 	public OrderListVModel(@NonNull Application application) {
 		super(application);
-		hahaDB = HahaDB.getInstance(this.getApplication());
-		this.firebaseFirestore = FirebaseFirestore.getInstance();
+		repository = new OrderRepository(application);
+		orders = repository.getAllOrders();
 	}
 
-	public LiveData<DocumentSnapshot> getOrders(){
-		CollectionReference proRef = firebaseFirestore.collection("orders");
-		liveData = new OrderQLiveData(proRef);
-		return liveData;
+	public LiveData<List<Order>> getOrders(Context context){
+		return orders;
+
 	}
 
 	

@@ -20,5 +20,11 @@ public interface OrderDao {
 	@Query("SELECT * FROM `Order`")
 	LiveData<List<Order>> getOrders();
 
+	@Query("DELETE FROM `Order`")
+	void deleteAll();
+
+	@Query("SELECT * FROM `Order` WHERE id = :id")
+	Order getOrderDetails(Integer id);
+
 	//get undone orders
 }

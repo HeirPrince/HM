@@ -16,6 +16,15 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
         android:layout_margin="2dp"
-        android:id="@+id/order_List"/>
+        android:id="@+id/order_List"
+        android:layout_above="@+id/chkout"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Checkout"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/chkout"
+        android:onClick="checkOutOrders"/>
 
 </RelativeLayout>

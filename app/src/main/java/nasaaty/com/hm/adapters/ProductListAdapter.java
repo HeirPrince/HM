@@ -23,6 +23,8 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 	Context context;
 	List<Product> products;
 	OrderVModel vModel;
+	int count = 0;
+
 
 	public ProductListAdapter(Context context, List<Product> products, OrderVModel vModel) {
 		this.context = context;
@@ -36,23 +38,30 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 	}
 
 	@Override
-	public void onBindViewHolder(productVHolder holder, int position) {
+	public void onBindViewHolder(final productVHolder holder, int position) {
 		final Product product = products.get(position);
 		holder.label.setText(product.getLabel());
 		holder.price.setText(String.valueOf(product.getPrice()));
 		holder.desc.setText(String.valueOf(product.getDescription()));
-
 		//place order
 		holder.plc_order.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+
 				Order order = new Order();
 				order.setOwner(product.getOwner());
 				order.setProduct_id(product.getPid());
 
 				vModel.insertOrder(order);
+
 			}
 		});
+	}
+
+	public void increaseInteger(Button plc_order) {
+
+		count = count + 1;
+		plc_order.setText("Amt : "+String.valueOf(count));
 	}
 
 	@Override

@@ -149,11 +149,10 @@ public class Home extends AppCompatActivity {
 					Product product = documentSnapshot.toObject(Product.class);
 					products.add(product);
 					adapter = new ProductListAdapter(Home.this,products, orderVModel);
+					list.setAdapter(adapter);
 				}
 			}
 		});
-
-		list.setAdapter(adapter);
 	}
 
 	public void detachListeners(){

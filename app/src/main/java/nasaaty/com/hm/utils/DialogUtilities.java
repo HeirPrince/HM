@@ -27,10 +27,6 @@ public class DialogUtilities {
 		this.ctx = ctx;
 	}
 
-	public void hide(){
-
-	}
-
 	public void showErrorDialog(String title, String message){
 		new AwesomeErrorDialog(ctx).setTitle(title)
 				.setMessage(message)
@@ -48,14 +44,21 @@ public class DialogUtilities {
 		.show();
 	}
 
-	public void showProgressDialog(String title, String message){
-		new AwesomeInfoDialog(ctx)
-				.setTitle(title)
-				.setMessage(message)
-				.setColoredCircle(R.color.dialogInfoBackgroundColor)
-				.setDialogIconAndColor(R.drawable.ic_dialog_info, R.color.white)
-				.setCancelable(true)
-				.show();
+	public void showProgressDialog(String title, String message, Boolean isVisible){
+
+		if (isVisible){
+			progressDialog = new AwesomeProgressDialog(ctx);
+			progressDialog
+					.setTitle(title)
+					.setMessage(message)
+					.setColoredCircle(R.color.dialogInfoBackgroundColor)
+					.setDialogIconAndColor(R.drawable.ic_dialog_info, R.color.white)
+					.setCancelable(true)
+					.show();
+		}else {
+			 progressDialog.hide();
+		}
+
 	}
 
 	public void showWarningDialog(String title, String message){

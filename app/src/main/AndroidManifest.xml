@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.MaterialTheme">
-        <activity android:name=".activities.MainActivity"></activity>
+        <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.SignIn" />
         <activity android:name=".activities.Home" />
         <activity android:name=".activities.AddProduct" />
@@ -24,7 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.Orders"></activity>
+        <activity android:name=".activities.Orders" />
+        <activity android:name=".activities.OrderDetails"></activity>
     </application>
 
 </manifest>

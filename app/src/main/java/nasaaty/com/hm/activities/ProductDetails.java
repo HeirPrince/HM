@@ -7,18 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import nasaaty.com.hm.R;
-import nasaaty.com.hm.model.Order;
 import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.viewmodels.OrderVModel;
 import nasaaty.com.hm.viewmodels.ProductListVModel;
-import nasaaty.com.hm.viewmodels.ProductVModel;
 
-public class OrderDetails extends AppCompatActivity {
+public class ProductDetails extends AppCompatActivity {
 
 	android.support.v7.widget.Toolbar toolbar;
 	TextView p_title, p_desc, p_price;
@@ -32,18 +29,23 @@ public class OrderDetails extends AppCompatActivity {
 		setContentView(R.layout.activity_order_details);
 
 		bindViews();
-		setViews(getIntent().getIntExtra("order_id", 0));
+		setViews(getIntent().getStringExtra("product_id"));
 	}
 
-	private void setViews(int order_id) {
-		Order order = orderVModel.getDetails(order_id);
+	private void setViews(String product_id) {
 
-		productListVModel.getProductById(order.getProduct_id()).observe(this, new Observer<DocumentSnapshot>() {
+		productListVModel.getProductById(product_id).observe(this, new Observer<DocumentSnapshot>() {
 			@Override
 			public void onChanged(@Nullable DocumentSnapshot documentSnapshot) {
 				Product product = documentSnapshot.toObject(Product.class);
-				p_title.setText(product.getLabel());
-				p_desc.setText(product.getDescription());
+				if (product !=null){
+					p_title.setText(product.getLabel());
+					p_desc.setText(product.getDescription());
+					p_title.setText(product.getPrice()+" RWF");
+					getSupportActionBar().setTitle(product.getLabel());
+				}else {
+					Toast.makeText(ProductDetails.this, "null", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 
@@ -52,13 +54,13 @@ public class OrderDetails extends AppCompatActivity {
 	private void bindViews() {
 		toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		getSupportActionBar().setTitle("Order Details");
+		getSupportActionBar().setTitle("Product Details");
 
 		orderVModel = ViewModelProviders.of(this).get(OrderVModel.class);
 		productListVModel = ViewModelProviders.of(this).get(ProductListVModel.class);
 
 		p_title = findViewById(R.id.p_title);
-		p_desc = findViewById(R.id.desc);
+		p_desc = findViewById(R.id.p_desc);
 		p_price = findViewById(R.id.price);
 	}
 }

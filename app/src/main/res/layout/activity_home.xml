@@ -18,7 +18,11 @@
         android:layout_below="@+id/toolbar"
         android:layout_alignParentStart="true"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="0dp" />
+        android:layout_marginBottom="0dp"
+        android:background="@color/lighter_bg"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/bottom_space"
+        android:scrollbars="vertical"/>
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
@@ -27,7 +31,8 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:onClick="addP"
-        tools:ignore="RelativeOverlap" />
+        tools:ignore="RelativeOverlap"
+        android:src="@drawable/vector_add_white"/>
     
 
 </RelativeLayout>

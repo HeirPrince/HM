@@ -2,11 +2,10 @@ package nasaaty.com.hm.utils.repos;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.persistence.room.Dao;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.view.ContextThemeWrapper;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,7 +20,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -29,7 +27,6 @@ import javax.annotation.Nullable;
 import nasaaty.com.hm.model.Order;
 import nasaaty.com.hm.room.HahaDB;
 import nasaaty.com.hm.utils.DialogUtilities;
-import nasaaty.com.hm.viewmodels.OrderVModel;
 
 public class OrderRepository {
 
@@ -39,6 +36,7 @@ public class OrderRepository {
 	HahaDB hahaDB;
 	LiveData<List<Order>> ordersLiveData;
 	DialogUtilities dialogUtilities;
+	Boolean isReg;
 
 	public OrderRepository(Context context) {
 		this.context = context;
@@ -47,6 +45,7 @@ public class OrderRepository {
 		this.hahaDB = HahaDB.getInstance(context);
 		this.ordersLiveData = hahaDB.orderEntity().getOrders();
 		this.dialogUtilities = new DialogUtilities(context);
+		this.isReg = false;
 	}
 
 	public LiveData<Order> getOrder(int order_id){
@@ -76,6 +75,15 @@ public class OrderRepository {
 		new insertOrderAsync(hahaDB).execute(order);
 	}
 
+	public void delete(Order order) {
+		new deleteOrderAsync(hahaDB).execute(order);
+	}
+
+	public void checkIfExists(String pid){
+		checkOrderAsync chk = new checkOrderAsync(hahaDB);
+		chk.execute(pid);
+	}
+
 	private class insertOrderAsync extends AsyncTask<Order, Void, Void>{
 
 		HahaDB hahaDBase;
@@ -90,6 +98,61 @@ public class OrderRepository {
 			return null;
 		}
 	}
+
+	private class deleteOrderAsync extends AsyncTask<Order, Void, Void>{
+
+		HahaDB hahaDBase;
+
+		public deleteOrderAsync(HahaDB hahaDB) {
+			this.hahaDBase = hahaDB;
+		}
+
+		@Override
+		protected Void doInBackground(Order... orders) {
+			hahaDBase.orderEntity().deleteOrder(orders[0]);
+			return null;
+		}
+	}
+
+	private interface AsyncResponse{
+		void response(String result);
+	}
+
+	private class checkOrderAsync extends AsyncTask<String, String, String>{
+
+		HahaDB hahaDBase;
+
+		public checkOrderAsync(HahaDB hahaDB) {
+			this.hahaDBase = hahaDB;
+		}
+
+		@Override
+		protected String doInBackground(String... strings) {
+			String val = hahaDB.orderEntity().getItemById(strings[0]);
+			return val;
+		}
+
+		@Override
+		protected void onPostExecute(String s) {
+			super.onPostExecute(s);
+			if (TextUtils.isEmpty(s)){
+				isReg = false;
+				check();
+			}
+			else {
+				isReg = true;
+				check();
+			}
+		}
+	}
+
+	public Boolean check() {
+		if (isReg)
+			return true;
+		else
+			return false;
+	}
+
 
 	private class deleteAsync extends AsyncTask<Void, Void, Void>{
 

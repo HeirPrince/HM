@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,8 +24,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.List;
 
 import nasaaty.com.hm.R;
-import nasaaty.com.hm.activities.Account;
-import nasaaty.com.hm.activities.OrderDetails;
+import nasaaty.com.hm.activities.ProductDetails;
 import nasaaty.com.hm.model.Order;
 import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.viewmodels.OrderVModel;
@@ -72,6 +70,26 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 							holder.p_title.setText(product.getLabel());
 							holder.p_desc.setText(product.getDescription());
 							holder.p_price.setText(String.valueOf(product.getPrice()));
+
+							holder.delete.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(View view) {
+									orderVModel.deleteOrder(order);
+									notifyDataSetChanged();
+									notifyItemRemoved(position);
+								}
+							});
+
+
+							holder.itemView.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(View view) {
+									Intent i = new Intent(context, ProductDetails.class);
+									i.putExtra("product_id", product.getPid());
+									context.startActivity(i);
+								}
+							});
+
 							holder.qty.addTextChangedListener(new TextWatcher() {
 								@Override
 								public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -92,20 +110,20 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 
 								@Override
 								public void afterTextChanged(Editable editable) {
+									String charSequence = editable.toString();
+									if (TextUtils.isEmpty(charSequence)){
+										holder.p_price.setText(String.valueOf(product.getPrice()));
+									}else {
+										int val = Integer.valueOf(charSequence.toString());
+										int price = Integer.valueOf(holder.p_price.getText().toString());
+
+										holder.p_price.setText(String.valueOf(val*price));
+									}
 								}
 							});
 						}
 					}
 				});
-
-		holder.itemView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				Intent i = new Intent(context, OrderDetails.class);
-				i.putExtra("order_id", order.getId());
-				context.startActivity(i);
-			}
-		});
 	}
 
 	@Override
@@ -117,6 +135,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 
 		TextView p_title, p_desc, p_price;
 		EditText qty;
+		View delete;
 		ImageView p_img;
 
 		public OrderVHolder(View itemView) {
@@ -125,6 +144,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 			p_desc = itemView.findViewById(R.id.desc);
 			p_price = itemView.findViewById(R.id.price);
 			qty = itemView.findViewById(R.id.qty);
+			delete = itemView.findViewById(R.id.del);
 		}
 	}
 

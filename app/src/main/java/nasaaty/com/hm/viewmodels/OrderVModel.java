@@ -41,5 +41,16 @@ public class OrderVModel extends AndroidViewModel {
 	public Order getDetails(int order_id){
 		return repository.getOrder(order_id).getValue();
 	}
-	
+
+	public void deleteOrder(Order order) {
+		repository.delete(order);
+	}
+
+	public Boolean checkIfProductExists(String pid){
+		repository.checkIfExists(pid);
+		if (repository.check())
+			return true;
+		else
+			return false;
+	}
 }

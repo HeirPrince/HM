@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/p_image"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/p_title"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/p_image"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/p_price"
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@id/p_title"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add"
+        android:layout_alignParentEnd="true"
+        android:text="ADD PRODUCT"
+        android:drawableStart="@drawable/vector_add"
+        android:layout_centerVertical="true"
+        android:textColor="@color/colorPrimary"
+        android:drawableTint="@color/colorPrimary"
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"/>
+
+
+</RelativeLayout>

@@ -25,7 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.Orders" />
-        <activity android:name=".activities.OrderDetails"></activity>
+        <activity android:name=".activities.ProductDetails" />
+        <activity android:name=".activities.ADDPList"></activity>
     </application>
 
 </manifest>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Orders">
+    tools:context=".activities.ADDPList">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
@@ -13,19 +13,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_margin="2dp"
-        android:id="@+id/order_List"
-        android:clipToPadding="false"
-        android:paddingBottom="10dp"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Checkout"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/chkout"
-        android:onClick="checkOutOrders"/>
+        android:layout_height="match_parent"
+        android:id="@+id/p_list"
+        android:layout_below="@+id/toolbar"/>
 
 </RelativeLayout>

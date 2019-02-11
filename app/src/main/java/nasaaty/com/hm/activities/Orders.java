@@ -2,11 +2,14 @@ package nasaaty.com.hm.activities;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -81,5 +84,21 @@ public class Orders extends AppCompatActivity {
 	public void checkOutOrders(View view) {
 		orderVModel.sync(orderList);
 		adapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.order_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()){
+			case R.id.add:
+				startActivity(new Intent(Orders.this, ADDPList.class));
+				break;
+		}
+		return false;
 	}
 }

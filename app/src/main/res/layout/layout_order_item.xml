@@ -18,9 +18,9 @@
                 android:src="@drawable/deliverer"
                 android:id="@+id/img"/>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_toEndOf="@+id/img"
                 android:orientation="vertical">
@@ -34,6 +34,17 @@
                     android:textStyle="bold"
                     android:id="@+id/title"/>
 
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/vector_close"
+                    android:id="@+id/del"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="4dp"
+                    android:padding="4dp"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,9 +52,10 @@
                     android:text="Rice is special at launch hours"
                     android:textColor="@color/black"
                     android:textSize="15sp"
-                    android:id="@+id/desc"/>
+                    android:id="@+id/desc"
+                    android:layout_below="@id/title"/>
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"

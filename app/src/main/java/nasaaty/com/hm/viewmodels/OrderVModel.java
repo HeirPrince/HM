@@ -49,8 +49,8 @@ public class OrderVModel extends AndroidViewModel {
 	public Boolean checkIfProductExists(String pid){
 		repository.checkIfExists(pid);
 		if (repository.check())
-			return true;
-		else
 			return false;
+		else
+			return true;
 	}
 }

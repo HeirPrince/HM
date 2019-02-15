@@ -14,10 +14,33 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageView
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:id="@+id/product_image"/>
+                android:layout_height="wrap_content"
+                android:background="@color/lighter_bg">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:id="@+id/product_image"
+                    android:scaleType="centerCrop"/>
+
+                <ProgressBar
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:id="@+id/progress"
+                    android:indeterminateTint="@color/colorPrimary"/>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/vector_fav"
+                    android:layout_gravity="end"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless.Colored" android:tint="@color/colorAccent"
+                    android:id="@+id/fav"/>
+
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

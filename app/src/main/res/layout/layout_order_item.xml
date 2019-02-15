@@ -15,7 +15,6 @@
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/deliverer"
                 android:id="@+id/img"/>
 
             <RelativeLayout
@@ -28,7 +27,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rice"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -49,7 +47,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Rice is special at launch hours"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:id="@+id/desc"
@@ -85,7 +82,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="500 RWF"
                     android:textColor="@color/colorPrimary"
                     android:layout_gravity="center_vertical"
                     android:textSize="15sp"

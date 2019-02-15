@@ -44,6 +44,7 @@ import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.model.User;
 import nasaaty.com.hm.utils.DialogUtilities;
 import nasaaty.com.hm.utils.ListSpacingDecoration;
+import nasaaty.com.hm.viewmodels.FavVModel;
 import nasaaty.com.hm.viewmodels.OrderVModel;
 import nasaaty.com.hm.viewmodels.ProductListVModel;
 import nasaaty.com.hm.viewmodels.UserVModel;
@@ -59,6 +60,7 @@ public class Home extends AppCompatActivity {
 	private UserVModel vModel;
 	private ProductListVModel productListVModel;
 	private OrderVModel orderVModel;
+	private FavVModel favVModel;
 	private DialogUtilities dialogUtilities;
 	private ProductListAdapter adapter;
 
@@ -75,6 +77,7 @@ public class Home extends AppCompatActivity {
 		vModel = ViewModelProviders.of(this).get(UserVModel.class);
 		productListVModel = ViewModelProviders.of(this).get(ProductListVModel.class);
 		orderVModel = ViewModelProviders.of(this).get(OrderVModel.class);
+		favVModel = ViewModelProviders.of(this).get(FavVModel.class);
 		dialogUtilities = new DialogUtilities(this);
 
 		firebaseAuth = FirebaseAuth.getInstance();
@@ -83,7 +86,7 @@ public class Home extends AppCompatActivity {
 			public void onAuthStateChanged(@NonNull FirebaseAuth fireAuth) {
 				currentUser = fireAuth.getCurrentUser();
 
-				if (currentUser != null){
+				if (currentUser != null) {
 					FirebaseUserMetadata metadata = currentUser.getMetadata();
 					if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
 						// The user is new, show them a fancy intro screen!
@@ -91,13 +94,13 @@ public class Home extends AppCompatActivity {
 						newUser.setUid(currentUser.getUid());
 						newUser.setName(currentUser.getDisplayName());
 
-						if (currentUser.getPhotoUrl() == null){
+						if (currentUser.getPhotoUrl() == null) {
 							newUser.setPhotoUrl("");
-						}else {
+						} else {
 							newUser.setPhotoUrl(currentUser.getPhotoUrl().toString());
 						}
 
-						if (!TextUtils.isEmpty(currentUser.getEmail())){
+						if (!TextUtils.isEmpty(currentUser.getEmail())) {
 							newUser.setEmail(currentUser.getEmail());
 						}
 
@@ -112,11 +115,11 @@ public class Home extends AppCompatActivity {
 									vModel.insertUser(newUser, new UserVModel.onUserSaved() {
 										@Override
 										public void done(Boolean yes) {
-											dialogUtilities.showSuccessDialog("Haha", "Hey "+currentUser.getDisplayName()+" welcome to HaHa");
+											dialogUtilities.showSuccessDialog("Haha", "Hey " + currentUser.getDisplayName() + " welcome to HaHa");
 										}
 									});
 									getData();
-								}else {
+								} else {
 									//user exists do nothing
 									getData();
 									return;
@@ -130,7 +133,7 @@ public class Home extends AppCompatActivity {
 //						dialogUtilities.showSuccessDialog("Welcome back", "Happy to see u back "+currentUser.getDisplayName());
 						getData();
 					}
-				}else {
+				} else {
 					finish();
 					startActivity(new Intent(Home.this, SignIn.class));
 				}
@@ -149,18 +152,18 @@ public class Home extends AppCompatActivity {
 				if (documentSnapshot != null) {
 					Product product = documentSnapshot.toObject(Product.class);
 					products.add(product);
-					adapter = new ProductListAdapter(Home.this,products, orderVModel);
+					adapter = new ProductListAdapter(Home.this, products, orderVModel, favVModel);
 					list.setAdapter(adapter);
 				}
 			}
 		});
 	}
 
-	public void detachListeners(){
+	public void detachListeners() {
 		firebaseAuth.removeAuthStateListener(listener);
 	}
 
-	public void attachListeners(){
+	public void attachListeners() {
 		firebaseAuth.addAuthStateListener(listener);
 	}
 
@@ -184,11 +187,12 @@ public class Home extends AppCompatActivity {
 	};
 
 	@Override
-	protected void onDestroy()
-	{
+	protected void onDestroy() {
 		super.onDestroy();
 
-		if (handler != null) { handler.removeCallbacks(mRunnable); }
+		if (handler != null) {
+			handler.removeCallbacks(mRunnable);
+		}
 	}
 
 	@Override
@@ -228,6 +232,9 @@ public class Home extends AppCompatActivity {
 				break;
 			case R.id.act:
 				startActivity(new Intent(Home.this, Account.class));
+				break;
+			case R.id.fav:
+				startActivity(new Intent(Home.this, Favorites.class));
 				break;
 			case R.id.cart:
 				startActivity(new Intent(Home.this, Orders.class));

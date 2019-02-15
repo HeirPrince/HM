@@ -45,7 +45,6 @@ public class OrderRepository {
 		this.hahaDB = HahaDB.getInstance(context);
 		this.ordersLiveData = hahaDB.orderEntity().getOrders();
 		this.dialogUtilities = new DialogUtilities(context);
-		this.isReg = false;
 	}
 
 	public LiveData<Order> getOrder(int order_id){
@@ -124,6 +123,7 @@ public class OrderRepository {
 
 		public checkOrderAsync(HahaDB hahaDB) {
 			this.hahaDBase = hahaDB;
+			isReg = false;
 		}
 
 		@Override
@@ -140,6 +140,7 @@ public class OrderRepository {
 				check();
 			}
 			else {
+				Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
 				isReg = true;
 				check();
 			}
@@ -224,52 +225,6 @@ public class OrderRepository {
 			mutableLiveData.setValue(order);
 			return null;
 		}
-	}
-
-	public void isOrdered(final Order order){
-		Query query = orderRef.whereEqualTo("product_id", order.getProduct_id());
-
-		query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-			@Override
-			public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-				if (e != null)
-					e.printStackTrace();
-
-				for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()){
-					if (snapshot.exists()){
-
-						Toast.makeText(context, "recent", Toast.LENGTH_SHORT).show();
-
-					}else {
-						Toast.makeText(context, "new", Toast.LENGTH_SHORT).show();
-					}
-				}
-			}
-		});
-	}
-
-	private void placeOrder(final Order order) {
-		CollectionReference orderRef = firebaseFirestore.collection("orders");
-
-		DocumentReference push = orderRef.document();
-		String id = push.getId();
-		DocumentReference oRef = orderRef.document(id);
-
-		oRef.set(order)
-				.addOnCompleteListener(new OnCompleteListener<Void>() {
-					@Override
-					public void onComplete(@NonNull Task<Void> task) {
-						if (task.isSuccessful()){
-							new placeOrderAsync(hahaDB).execute(order);
-						}
-					}
-				})
-				.addOnFailureListener(new OnFailureListener() {
-					@Override
-					public void onFailure(@NonNull Exception e) {
-
-					}
-				});
 	}
 
 	class placeOrderAsync extends AsyncTask<Order, Void, Void> {

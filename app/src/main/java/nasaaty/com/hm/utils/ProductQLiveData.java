@@ -20,7 +20,6 @@ public class ProductQLiveData extends LiveData<DocumentSnapshot> {
 	private static final String TAG = "uQLvData";
 	private final Handler handler = new Handler();
 	private Query query;
-	private CollectionReference collectionReference;
 	private ProductQLiveData.MyEventListener listener = new ProductQLiveData.MyEventListener();
 	private ListenerRegistration listenerRegistration;
 	private boolean listenerRemovePending = false;

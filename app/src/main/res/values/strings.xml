@@ -10,4 +10,5 @@
     <string name="dialog_title_edit">Edit Account</string>
     <string name="dialog_positive_button_edit">DONE</string>
     <string name="dialog_positive_button_done">Done</string>
+    <string name="label_select_picture">Select Image from Gallery</string>
 </resources>

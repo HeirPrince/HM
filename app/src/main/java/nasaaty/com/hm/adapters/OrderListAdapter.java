@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -58,7 +59,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 		//get product by id
 		final Order order = orders.get(position);
 
-		Query query = firestore.collection("products")
+		Query query = firestore.collection("favorites")
 				.whereEqualTo("pid", order.getProduct_id());
 		query.get()
 				.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -70,13 +71,14 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 							holder.p_title.setText(product.getLabel());
 							holder.p_desc.setText(product.getDescription());
 							holder.p_price.setText(String.valueOf(product.getPrice()));
+							Toast.makeText(context, product.getLabel(), Toast.LENGTH_SHORT).show();
 
 							holder.delete.setOnClickListener(new View.OnClickListener() {
 								@Override
 								public void onClick(View view) {
 									orderVModel.deleteOrder(order);
 									notifyDataSetChanged();
-									notifyItemRemoved(position);
+									orders.remove(position);
 								}
 							});
 

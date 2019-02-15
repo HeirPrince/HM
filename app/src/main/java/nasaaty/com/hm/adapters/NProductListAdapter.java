@@ -17,7 +17,7 @@ import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.utils.DialogUtilities;
 import nasaaty.com.hm.viewmodels.OrderVModel;
 
-public class NProductListAdapter extends RecyclerView.Adapter<NProductListAdapter.productVHolder>{
+public class NProductListAdapter extends RecyclerView.Adapter<NProductListAdapter.productVHolder> {
 
 	Context context;
 	List<Product> products;
@@ -39,7 +39,7 @@ public class NProductListAdapter extends RecyclerView.Adapter<NProductListAdapte
 	}
 
 	@Override
-	public void onBindViewHolder(final productVHolder holder, int position) {
+	public void onBindViewHolder(final productVHolder holder, final int position) {
 		final Product product = products.get(position);
 		holder.label.setText(product.getLabel());
 		holder.price.setText(String.valueOf(product.getPrice()));
@@ -49,14 +49,14 @@ public class NProductListAdapter extends RecyclerView.Adapter<NProductListAdapte
 			@Override
 			public void onClick(View view) {
 
-				if(vModel.checkIfProductExists(product.getPid())){
+				if (vModel.checkIfProductExists(product.getPid())) {
 					dialogUtilities.showErrorDialog("Insert Product", "This Order has already been placed");
-				}else {
+				} else {
 					Order order = new Order();
-					order.setOwner(product.getOwner());
-					order.setProduct_id(product.getPid());
-//				vModel.getDetails()
-//
+					order.setOwner(products.get(position).getOwner());
+					order.setProduct_id(products.get(position).getPid());
+//					vModel.getDetails()
+
 					vModel.insertOrder(order);
 				}
 
@@ -67,7 +67,7 @@ public class NProductListAdapter extends RecyclerView.Adapter<NProductListAdapte
 	public void increaseInteger(Button plc_order) {
 
 		count = count + 1;
-		plc_order.setText("Amt : "+String.valueOf(count));
+		plc_order.setText("Amt : " + String.valueOf(count));
 	}
 
 	@Override

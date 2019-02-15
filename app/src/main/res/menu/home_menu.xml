@@ -8,6 +8,9 @@
     <item android:id="@+id/act"
         android:title="Account"/>
 
+    <item android:id="@+id/fav"
+        android:title="Favorites"/>
+
     <item android:id="@+id/cart"
         android:title="Cart"
         android:icon="@drawable/vector_cart"

@@ -22,6 +22,7 @@ import java.util.List;
 import nasaaty.com.hm.R;
 import nasaaty.com.hm.adapters.OrderListAdapter;
 import nasaaty.com.hm.model.Order;
+import nasaaty.com.hm.utils.DemoObserver;
 import nasaaty.com.hm.utils.DialogUtilities;
 import nasaaty.com.hm.viewmodels.OrderListVModel;
 import nasaaty.com.hm.viewmodels.OrderVModel;
@@ -57,6 +58,8 @@ public class Orders extends AppCompatActivity {
 		orderVModel = ViewModelProviders.of(this).get(OrderVModel.class);
 		utilities = new DialogUtilities(this);
 		orderList = new ArrayList<>();
+
+		getLifecycle().addObserver(new DemoObserver());
 
 		order_list = findViewById(R.id.order_List);
 		order_list.setLayoutManager(new LinearLayoutManager(this));

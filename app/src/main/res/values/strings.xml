@@ -11,4 +11,11 @@
     <string name="dialog_positive_button_edit">DONE</string>
     <string name="dialog_positive_button_done">Done</string>
     <string name="label_select_picture">Select Image from Gallery</string>
+
+
+    <!-- placeholders-->
+    <string name="belaire">Belaire Rosé is a French sparkling wine produced in the Provence-Alpes-Côte d\'Azur region of the South of France. Officially labelled "Luc Belaire Rare Rosé," the wine is a blend of Syrah, Grenache, and Cinsault grapes typically used in the production of Provencal rosé wines.</string>
+    <string name="nike_shoe2">Men\'s Nike Varsity Compete Trainer Training Shoes</string>
+    <string name="air_jordan1">Girls\' Big Kids\' Air Jordan Retro 4 Basketball Shoes</string>
+    <string name="air_jordan2">MEN\'S AIR JORDAN 1 MID RETRO BASKETBALL SHOES</string>
 </resources>

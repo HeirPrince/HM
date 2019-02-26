@@ -1,10 +1,8 @@
 package nasaaty.com.hm.adapters;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,10 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
@@ -32,8 +28,10 @@ import nasaaty.com.hm.model.Order;
 import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.room.HahaDB;
 import nasaaty.com.hm.utils.StorageRepository;
+import nasaaty.com.hm.utils.repos.TransactionRepository;
 import nasaaty.com.hm.viewmodels.FavVModel;
 import nasaaty.com.hm.viewmodels.OrderVModel;
+import nasaaty.com.hm.viewmodels.ProductListVModel;
 
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.productVHolder> {
 
@@ -41,18 +39,23 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 	List<Product> products;
 	OrderVModel vModel;
 	FavVModel favVModel;
+	ProductListVModel productVModel;
 	HahaDB hahaDB;
 	Boolean inspect;
 	StorageRepository repository;
+	TransactionRepository transactionRepository;
+	public Boolean processView = false;
 
 
-	public ProductListAdapter(Context context, List<Product> products, OrderVModel vModel, FavVModel favVModel) {
+	public ProductListAdapter(Context context, List<Product> products, OrderVModel vModel, FavVModel favVModel, ProductListVModel productVModel) {
 		this.context = context;
 		this.products = products;
 		this.vModel = vModel;
 		this.favVModel = favVModel;
+		this.productVModel = productVModel;
 		this.hahaDB = HahaDB.getInstance(context);
 		this.repository = new StorageRepository(context);
+		this.transactionRepository = new TransactionRepository(context);
 		this.inspect = false;
 	}
 
@@ -66,8 +69,18 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 		final Product product = products.get(position);
 		if (product != null) {
 			holder.label.setText(product.getLabel());
-			holder.price.setText(String.valueOf(product.getPrice()));
-			holder.desc.setText(String.valueOf(product.getDescription()));
+			holder.price.setText(String.valueOf(product.getPrice())+" RWF");
+			holder.desc.setText(product.getDescription());
+
+			holder.itemView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
+					processView = true;
+				}
+			});
+
+
 			holder.toggleProgress(true);
 
 			StorageReference ref = repository.getProductImage(product.getPid());
@@ -78,7 +91,11 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 					if (uri != null){
 						holder.toggleProgress(false);
 						Picasso.get().load(uri).into(holder.pro_image);
-					}else {holder.toggleProgress(false); return;}
+					}else {
+						holder.toggleProgress(false);
+						Picasso.get().load(R.drawable.vector_pic).into(holder.pro_image);
+						return;
+					}
 				}
 			});
 
@@ -122,6 +139,11 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 			Toast.makeText(context, "null", Toast.LENGTH_SHORT).show();
 		}
 
+	}
+
+	public void updateLists(List<Product> list){
+		this.products.clear();
+		this.products.addAll(list);
 	}
 
 	// FIXME: 2/14/2019
@@ -176,7 +198,8 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
 	class productVHolder extends RecyclerView.ViewHolder {
 
-		TextView label, price, desc;
+		TextView label, price, tvViews;
+		ReadMoreTextView desc;
 		Button plc_order;
 		ImageButton fav;
 		ImageView pro_image;
@@ -191,6 +214,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 			pro_image = itemView.findViewById(R.id.product_image);
 			fav = itemView.findViewById(R.id.fav);
 			progressBar = itemView.findViewById(R.id.progress);
+			tvViews = itemView.findViewById(R.id.tv_views);
 		}
 
 		public void toggleFav(boolean b) {

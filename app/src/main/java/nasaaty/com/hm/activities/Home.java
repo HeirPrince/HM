@@ -3,7 +3,6 @@ package nasaaty.com.hm.activities;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,37 +12,37 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.awesomedialog.blennersilva.awesomedialoglibrary.AwesomeProgressDialog;
-import com.awesomedialog.blennersilva.awesomedialoglibrary.interfaces.Closure;
+import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.firebase.firestore.Query;
 
 import nasaaty.com.hm.R;
 import nasaaty.com.hm.adapters.ProductListAdapter;
 import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.model.User;
 import nasaaty.com.hm.utils.DialogUtilities;
-import nasaaty.com.hm.utils.ListSpacingDecoration;
+import nasaaty.com.hm.utils.repos.TransactionRepository;
 import nasaaty.com.hm.viewmodels.FavVModel;
 import nasaaty.com.hm.viewmodels.OrderVModel;
 import nasaaty.com.hm.viewmodels.ProductListVModel;
@@ -55,6 +54,7 @@ public class Home extends AppCompatActivity {
 	private FirebaseAuth firebaseAuth;
 	private FirebaseAuth.AuthStateListener listener;
 	private FirebaseUser currentUser;
+	private FirebaseFirestore firestore;
 	boolean doubleBackToExitPressedOnce = false;
 	private Handler handler = new Handler();
 	private UserVModel vModel;
@@ -63,6 +63,8 @@ public class Home extends AppCompatActivity {
 	private FavVModel favVModel;
 	private DialogUtilities dialogUtilities;
 	private ProductListAdapter adapter;
+	private FirestoreRecyclerAdapter f_adapter;
+	private TransactionRepository transactionRepository;
 
 	RecyclerView list;
 
@@ -72,6 +74,8 @@ public class Home extends AppCompatActivity {
 		setContentView(R.layout.activity_home);
 		tb = findViewById(R.id.toolbar);
 		setSupportActionBar(tb);
+		firestore = FirebaseFirestore.getInstance();
+
 
 		list = findViewById(R.id.product_list);
 		vModel = ViewModelProviders.of(this).get(UserVModel.class);
@@ -79,6 +83,7 @@ public class Home extends AppCompatActivity {
 		orderVModel = ViewModelProviders.of(this).get(OrderVModel.class);
 		favVModel = ViewModelProviders.of(this).get(FavVModel.class);
 		dialogUtilities = new DialogUtilities(this);
+		transactionRepository = new TransactionRepository(this);
 
 		firebaseAuth = FirebaseAuth.getInstance();
 		listener = new FirebaseAuth.AuthStateListener() {
@@ -118,10 +123,10 @@ public class Home extends AppCompatActivity {
 											dialogUtilities.showSuccessDialog("Haha", "Hey " + currentUser.getDisplayName() + " welcome to HaHa");
 										}
 									});
-									getData();
+									getD();
 								} else {
 									//user exists do nothing
-									getData();
+									getD();
 									return;
 								}
 							}
@@ -131,7 +136,7 @@ public class Home extends AppCompatActivity {
 					} else {
 						// This is an existing user, show them a welcome back screen.
 //						dialogUtilities.showSuccessDialog("Welcome back", "Happy to see u back "+currentUser.getDisplayName());
-						getData();
+						getD();
 					}
 				} else {
 					finish();
@@ -141,30 +146,126 @@ public class Home extends AppCompatActivity {
 		};
 	}
 
-	private void getData() {
-		final List<Product> products = new ArrayList<>();
+
+	public void getD() {
 		list.setLayoutManager(new LinearLayoutManager(this));
 		list.setHasFixedSize(true);
+		Query first_five = firestore.collection("products");
 
-		productListVModel.getProducts().observe(this, new Observer<DocumentSnapshot>() {
+		FirestoreRecyclerOptions<Product> options =
+				new FirestoreRecyclerOptions.Builder<Product>()
+						.setQuery(first_five, Product.class)
+						.setLifecycleOwner(this)
+						.build();
+
+		f_adapter = new FirestoreRecyclerAdapter<Product, productVHolder>(options) {
+			@NonNull
 			@Override
-			public void onChanged(@Nullable DocumentSnapshot documentSnapshot) {
-				if (documentSnapshot != null) {
-					Product product = documentSnapshot.toObject(Product.class);
-					products.add(product);
-					adapter = new ProductListAdapter(Home.this, products, orderVModel, favVModel);
-					list.setAdapter(adapter);
-				}
+			public productVHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+				View view = LayoutInflater.from(parent.getContext())
+						.inflate(R.layout.layout_product_item, parent, false);
+
+				return new productVHolder(view);
 			}
-		});
+
+			@Override
+			protected void onBindViewHolder(@NonNull final productVHolder holder, int position, @NonNull final Product model) {
+				final Product product = model;
+				holder.label.setText(product.getLabel());
+				holder.price.setText(String.valueOf(product.getPrice()) + " RWF");
+				holder.desc.setText(product.getDescription());
+				transactionRepository.getViewCount(model.getPid(), new TransactionRepository.numberOfViews() {
+					@Override
+					public void count(int n) {
+						holder.tvViews.setText(String.valueOf(n));
+					}
+				});
+
+				holder.add_likes.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						transactionRepository.allowUserLikes(model.getPid());
+					}
+				});
+
+				holder.itemView.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						transactionRepository.trans(model.getPid());
+					}
+				});
+
+
+			}
+		};
+
+		f_adapter.notifyDataSetChanged();
+		list.setAdapter(f_adapter);
+
 	}
+
+
+//	private void attachRecyclerViewAdapter() {
+//		final RecyclerView.Adapter adapter = getD();
+//
+//		// Scroll to bottom on new messages
+//		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+//			@Override
+//			public void onItemRangeInserted(int positionStart, int itemCount) {
+//				list.smoothScrollToPosition(0);
+//			}
+//		});
+//
+//		list.setAdapter(adapter);
+//	}
+
+	class productVHolder extends RecyclerView.ViewHolder {
+
+		TextView label, price, tvViews;
+		ReadMoreTextView desc;
+		Button plc_order, add_likes;
+		ImageButton fav;
+		ImageView pro_image;
+		ProgressBar progressBar;
+
+		public productVHolder(View itemView) {
+			super(itemView);
+			label = itemView.findViewById(R.id.product_title);
+			price = itemView.findViewById(R.id.product_price);
+			desc = itemView.findViewById(R.id.product_description);
+			plc_order = itemView.findViewById(R.id.plc_order);
+			pro_image = itemView.findViewById(R.id.product_image);
+			fav = itemView.findViewById(R.id.fav);
+			progressBar = itemView.findViewById(R.id.progress);
+			tvViews = itemView.findViewById(R.id.tv_views);
+			add_likes = itemView.findViewById(R.id.btnLike);
+		}
+
+		public void toggleFav(boolean b) {
+			if (b)
+				fav.setImageResource(R.drawable.vector_fav_checked);
+			else
+				fav.setImageResource(R.drawable.vector_fav);
+		}
+
+		private void toggleProgress(boolean b) {
+			if (b)
+				progressBar.setVisibility(View.VISIBLE);
+			else
+				progressBar.setVisibility(View.GONE);
+
+		}
+	}
+
 
 	public void detachListeners() {
 		firebaseAuth.removeAuthStateListener(listener);
+//		f_adapter.startListening();
 	}
 
 	public void attachListeners() {
 		firebaseAuth.addAuthStateListener(listener);
+//		f_adapter.stopListening();
 	}
 
 	@Override

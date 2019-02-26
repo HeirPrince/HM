@@ -13,4 +13,5 @@
     <color name="color_dark">#263238</color>
     <color name="lighter_bg">#ECEFF1</color>
     <color name="yellow">#FFD54F</color>
+    <color name="grey">#EEEEEE</color>
 </resources>

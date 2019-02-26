@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="300dp"
     app:cardElevation="@dimen/cardview_default_elevation"
     app:cardPreventCornerOverlap="true"
     app:cardCornerRadius="@dimen/cardview_default_radius"
-    android:layout_margin="6dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_margin="6dp">
 
 
         <LinearLayout
@@ -21,7 +21,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="200dp"
                     android:id="@+id/product_image"
                     android:scaleType="centerCrop"/>
 
@@ -40,64 +40,105 @@
                     style="@style/Base.Widget.AppCompat.Button.Borderless.Colored" android:tint="@color/colorAccent"
                     android:id="@+id/fav"/>
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:orientation="vertical"
+                    android:layout_margin="10dp">
+
+                    <TextView
+                        android:id="@+id/product_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="18000"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="15sp"
+                        android:layout_marginBottom="4dp"
+                        android:textStyle="bold" />
+
+
+                    <Button
+                        android:id="@+id/plc_order"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Order"
+                        android:textColor="@color/white"
+                        android:background="@color/colorPrimary"/>
+
+                </LinearLayout>
+
             </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:layout_marginTop="4dp"
                 android:padding="5dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Banana"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:id="@+id/product_title"/>
 
-                <TextView
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Banana"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:id="@+id/product_title"
+                        android:layout_alignParentStart="true"/>
+
+                   <LinearLayout
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:orientation="horizontal"
+                       android:layout_alignParentEnd="true"
+                       android:layout_centerVertical="true">
+
+                       <View
+                           android:layout_width="20dp"
+                           android:layout_height="20dp"
+                           android:background="@drawable/vector_view"
+                           android:backgroundTint="@color/colorPrimary"/>
+
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_marginStart="4dp"
+                           android:id="@+id/tv_views"
+                           android:text="3"/>
+
+                   </LinearLayout>
+
+                </RelativeLayout>
+
+                <com.borjabravo.readmoretextview.ReadMoreTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Banana"
                     android:textStyle="normal"
-                    android:textColor="@color/black"
                     android:textSize="12sp"
-                    android:id="@+id/product_description"/>
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_centerVertical="true">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="18000"
-                        android:layout_gravity="center_vertical"
-                        android:id="@+id/product_price"/>
-
-                </LinearLayout>
+                    android:id="@+id/product_description"
+                    app:trimExpandedText="Show More"
+                    app:trimCollapsedText="Show Less"
+                    app:trimMode="trimModeLine"
+                    app:trimLines="2"/>
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Order"
-                    android:layout_alignParentEnd="true"
-                    android:id="@+id/plc_order"/>
+                    android:drawableLeft="@drawable/vector_like"
+                    android:drawableTint="@color/colorPrimary"
+                    android:text="1"
+                    android:id="@+id/btnLike"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
         </LinearLayout>
 

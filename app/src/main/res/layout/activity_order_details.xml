@@ -13,121 +13,132 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="6dp">
+            android:layout_height="wrap_content"
+            >
 
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/product_image"
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
+                android:layout_height="150dp"
+                android:contentDescription="Man carrying a packet"
+                android:scaleType="centerCrop"
+                android:src="@drawable/deliverer" />
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:id="@+id/p_image"/>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/p_image">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:text="Title"
-                        android:textSize="20sp"
-                        android:layout_centerVertical="true"
-                        android:id="@+id/p_title"/>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/price"
-                            android:text="500RWF"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="15sp" />
-
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/vector_add_cart"
-                            android:drawableTint="@color/colorPrimary"
-                            android:text="Add to cart"
-                            android:textColor="@color/colorPrimary"
-                            android:layout_marginStart="10dp"
-                            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"/>
-
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-            </RelativeLayout>
-
-            <android.support.v7.widget.CardView
+            <TextView
+                android:id="@+id/product_title"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="2dp"
-                android:layout_marginTop="10dp">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/product_image"
+                android:layout_marginTop="10dp"
+                android:fontFamily="sans-serif-smallcaps"
+                android:text="Samsung Galaxy S15"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:id="@+id/actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/product_title"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <include
+                    layout="@layout/layout_rating_item" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                    <View
-                        android:layout_width="4dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/colorPrimary"/>
+                    <Button
+                        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableLeft="@drawable/vector_share"
+                        android:drawableTint="@color/accent"
+                        android:onClick="shareProduct"
+                        android:text="Share"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_marginStart="4dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Description"
-                            android:textStyle="bold"
-                            android:textSize="12sp"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="6dp"
-                            android:background="@color/lighter_bg"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="sdfsdfsdfsdf"
-                            android:textColor="@color/black"
-                            android:layout_marginTop="10dp"
-                            android:textSize="15sp"
-                            android:id="@+id/p_desc"/>
-
-                    </LinearLayout>
+                    <Button
+                        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableLeft="@drawable/vector_fav"
+                        android:text="Add to favorites"/>
 
                 </LinearLayout>
 
-            </android.support.v7.widget.CardView>
 
-        </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/buy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/actions">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/product_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="RWF 800"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:text="Order"
+                        android:textColor="@color/white" />
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/desc_rev"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/buy"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/product_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="sdfsdnfksnfksnfkjsnfkjnsdkjfnskjdnfkjsndfkjsndkjfnskjdfnkjsdnfksjdfksndfkjsndfkjsndfkjnsdkjfnskjdnfkjsndfkjsndfkjnskdjfnsdkjfnkjsndfkjsdnfkjnsdkjfnskjdfnkjsndfkjsndfkjsndfkjnskjfnkjsnfkjsf." />
+
+                <include layout="@layout/layout_product_reviewed"/>
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
 
     </ScrollView>
 

@@ -18,4 +18,6 @@
     <string name="nike_shoe2">Men\'s Nike Varsity Compete Trainer Training Shoes</string>
     <string name="air_jordan1">Girls\' Big Kids\' Air Jordan Retro 4 Basketball Shoes</string>
     <string name="air_jordan2">MEN\'S AIR JORDAN 1 MID RETRO BASKETBALL SHOES</string>
+    <string name="choose">Choose category</string>
+    <string name="RDACurrency">%d RWF</string>
 </resources>

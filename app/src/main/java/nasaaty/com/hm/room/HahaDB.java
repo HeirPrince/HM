@@ -12,7 +12,7 @@ import nasaaty.com.hm.model.Order;
 import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.model.User;
 
-@Database(entities = {User.class, Product.class, Order.class, Favorite.class}, version = 7)
+@Database(entities = {User.class, Product.class, Order.class, Favorite.class}, version = 8)
 public abstract class HahaDB extends RoomDatabase {
 
 	private static HahaDB Instance;
@@ -27,7 +27,7 @@ public abstract class HahaDB extends RoomDatabase {
 	static final Migration MIGRATION_5_6 = new Migration(5, 6) {
 		@Override
 		public void migrate(SupportSQLiteDatabase database) {
-			database.execSQL("ALTER TABLE orders ADD COLUMN order_id TEXT");
+			database.execSQL("ALTER TABLE product ADD COLUMN category TEXT");
 		}
 	};
 

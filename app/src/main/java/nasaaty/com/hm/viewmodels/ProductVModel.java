@@ -5,8 +5,10 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -46,8 +48,15 @@ public class ProductVModel extends AndroidViewModel{
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						if (task.isSuccessful()){
+							Toast.makeText(getApplication(), product.getLabel()+" saved.", Toast.LENGTH_SHORT).show();
 							new insertProductAsync(hahaDB, images).execute(product);
 						}
+					}
+				})
+				.addOnFailureListener(new OnFailureListener() {
+					@Override
+					public void onFailure(@NonNull Exception e) {
+						Toast.makeText(getApplication(), e.getMessage(), Toast.LENGTH_LONG).show();
 					}
 				});
 	}

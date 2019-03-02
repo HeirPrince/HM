@@ -13,9 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,11 +35,12 @@ import nasaaty.com.hm.room.HahaDB;
 import nasaaty.com.hm.utils.PermissionUtils;
 import nasaaty.com.hm.viewmodels.ProductVModel;
 
-public class AddProduct extends AppCompatActivity {
+public class AddProduct extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 	private static final int GALLERY_REQUEST_CODE = 100;
 	EditText label, desc, price;
 	ImageView imageView;
+	Spinner cats;
 	private HahaDB hahaDB;
 	private FirebaseAuth auth;
 	private ProductVModel vModel;
@@ -73,6 +77,14 @@ public class AddProduct extends AppCompatActivity {
 		price = findViewById(R.id.price);
 		imageView = findViewById(R.id.product_image);
 		gvGallery = findViewById(R.id.gv);
+		cats = findViewById(R.id.cat_spinner);
+
+		//setup category spinner
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+				R.array.testItems, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		cats.setAdapter(adapter);
+		cats.setOnItemSelectedListener(this);
 	}
 
 	public void addP(View view) {
@@ -85,13 +97,11 @@ public class AddProduct extends AppCompatActivity {
 		product.setPrice(p);
 		product.setDescription(d);
 		product.setOwner(auth.getCurrentUser().getUid());
+		product.setCategory(cats.getSelectedItem().toString());
+		product.setNumRatings(0);
+		product.setAvgRatings(0.0);
 
-		if (uriList != null){
-			
-			vModel.insertNew(product, uriList);
-		}else {
-			Toast.makeText(this, "add product images", Toast.LENGTH_SHORT).show();
-		}
+		vModel.insertNew(product, uriList);
 	}
 
 	private void pickFromGallery() {
@@ -128,7 +138,7 @@ public class AddProduct extends AppCompatActivity {
 				String[] filePathColumn = { MediaStore.Images.Media.DATA };
 				if(data.getData()!=null){
 
-					Uri mImageUri=data.getData();
+					Uri mImageUri = data.getData();
 					uriList.add(mImageUri);
 
 					// Get the cursor
@@ -189,5 +199,15 @@ public class AddProduct extends AppCompatActivity {
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+		Toast.makeText(this, adapterView.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> adapterView) {
+		
 	}
 }

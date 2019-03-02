@@ -4,8 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.os.Handler;
 import android.util.Log;
 
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -67,9 +65,13 @@ public class ProductQLiveData extends LiveData<DocumentSnapshot> {
 
 		@Override
 		public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-			for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()){
-				if (snapshot != null){
-					setValue(snapshot);
+			if (queryDocumentSnapshots.isEmpty()){
+				   setValue(null);
+			}else {
+				for (DocumentSnapshot snapshot : queryDocumentSnapshots){
+					if (snapshot != null){
+						setValue(snapshot);
+					}
 				}
 			}
 		}

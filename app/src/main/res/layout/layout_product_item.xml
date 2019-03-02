@@ -129,12 +129,10 @@
                     app:trimMode="trimModeLine"
                     app:trimLines="2"/>
 
-                <Button
-                    android:layout_width="wrap_content"
+                <ImageButton
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/vector_like"
-                    android:drawableTint="@color/colorPrimary"
-                    android:text="1"
+                    android:src="@drawable/vector_like"
                     android:id="@+id/btnLike"
                     style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"/>
 

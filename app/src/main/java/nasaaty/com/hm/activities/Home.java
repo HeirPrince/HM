@@ -34,8 +34,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import nasaaty.com.hm.R;
 import nasaaty.com.hm.adapters.ProductListAdapter;
@@ -170,10 +173,11 @@ public class Home extends AppCompatActivity {
 
 			@Override
 			protected void onBindViewHolder(@NonNull final productVHolder holder, int position, @NonNull final Product model) {
-				final Product product = model;
-				holder.label.setText(product.getLabel());
-				holder.price.setText(String.valueOf(product.getPrice()) + " RWF");
-				holder.desc.setText(product.getDescription());
+				holder.label.setText(model.getLabel());
+				holder.price.setText(String.format("%s RWF", String.valueOf(model.getPrice())));
+				holder.desc.setText(model.getDescription());
+				holder.setLikeBtn(model.getPid());
+
 				transactionRepository.getViewCount(model.getPid(), new TransactionRepository.numberOfViews() {
 					@Override
 					public void count(int n) {
@@ -191,10 +195,13 @@ public class Home extends AppCompatActivity {
 				holder.itemView.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						transactionRepository.trans(model.getPid());
+//						transactionRepository.trans(model.getPid());
+						Intent intent = new Intent(Home.this, ProductDetails.class);
+						intent.putExtra("pid", model.getPid());
+						intent .putExtra("uid", firebaseAuth.getCurrentUser().getUid());
+						startActivity(intent);
 					}
 				});
-
 
 			}
 		};
@@ -223,8 +230,8 @@ public class Home extends AppCompatActivity {
 
 		TextView label, price, tvViews;
 		ReadMoreTextView desc;
-		Button plc_order, add_likes;
-		ImageButton fav;
+		Button plc_order;
+		ImageButton fav, add_likes;
 		ImageView pro_image;
 		ProgressBar progressBar;
 
@@ -255,6 +262,31 @@ public class Home extends AppCompatActivity {
 				progressBar.setVisibility(View.GONE);
 
 		}
+
+		public void setLikeBtn(final String pid) {
+			firestore.collection("likes").document(pid).collection(firebaseAuth.getCurrentUser().getUid())
+					.addSnapshotListener(new EventListener<QuerySnapshot>() {
+						@Override
+						public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+							if (e != null) return;
+
+							for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
+
+								if (snapshot.exists()) {
+									if (snapshot.get(firebaseAuth.getCurrentUser().getUid()) != null) {
+										add_likes.setImageResource(R.drawable.vector_like_selected);
+									}else {
+										add_likes.setImageResource(R.drawable.vector_like);
+									}
+								} else {
+									add_likes.setImageResource(R.drawable.vector_like);
+								}
+							}
+						}
+					});
+		}
+
+
 	}
 
 

@@ -45,10 +45,6 @@ public class ProductListVModel extends AndroidViewModel implements
 		return liveData;
 	}
 
-	public void getCount(String pid) {
-
-	}
-
 	@Override
 	public void onComplete(Boolean complete) {
 		Toast.makeText(getApplication(), "view created", Toast.LENGTH_SHORT).show();

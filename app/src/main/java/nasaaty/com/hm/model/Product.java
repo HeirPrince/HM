@@ -13,17 +13,22 @@ public class Product {
 	private String description;
 	private int price;
 	private String owner;
+	public int numRatings;
+	public double avgRatings;
+	private String category;
 
 	public Product() {
 	}
 
-	public Product(int id, String pid, String label, String description, int price, String owner) {
-		this.id = id;
+	public Product(String pid, String label, String description, int price, String owner, String category, int numRatings, double avgRatings) {
 		this.pid = pid;
 		this.label = label;
 		this.description = description;
 		this.price = price;
 		this.owner = owner;
+		this.category = category;
+		this.numRatings = numRatings;
+		this.avgRatings = avgRatings;
 	}
 
 	public int getId() {
@@ -72,5 +77,29 @@ public class Product {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public int getNumRatings() {
+		return numRatings;
+	}
+
+	public void setNumRatings(int numRatings) {
+		this.numRatings = numRatings;
+	}
+
+	public double getAvgRatings() {
+		return avgRatings;
+	}
+
+	public void setAvgRatings(double avgRatings) {
+		this.avgRatings = avgRatings;
 	}
 }

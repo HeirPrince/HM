@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/isUserNotFound"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
     android:padding="10dp"
+    android:orientation="vertical"
     android:visibility="visible">
 
     <TextView
@@ -21,7 +22,6 @@
         android:id="@+id/subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
         android:layout_marginTop="4dp"
         android:text="Help others choose the best product"
         android:textSize="12sp"/>
@@ -30,31 +30,11 @@
         android:id="@+id/stars"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/title"
-        android:layout_below="@id/subtitle"
         android:layout_marginTop="10dp"
         android:numStars="5"
         android:rating="0"
         android:stepSize="0.5" />
 
-    <EditText
-        android:id="@+id/rev"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/stars"
-        android:layout_marginTop="4dp"
-        android:hint="Write a Review"/>
-
-    <Button
-        android:id="@+id/postRev"
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="152dp"
-        android:onClick="postRev"
-        android:text="POST"/>
 
 
-
-</RelativeLayout>
+</LinearLayout>

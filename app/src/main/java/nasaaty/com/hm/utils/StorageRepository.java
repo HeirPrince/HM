@@ -16,9 +16,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+
+import nasaaty.com.hm.model.ImageFile;
 
 public class StorageRepository {
 
@@ -36,7 +36,7 @@ public class StorageRepository {
 		this.storage = FirebaseStorage.getInstance();
 		this.firestore = FirebaseFirestore.getInstance();
 		this.dialogUtilities = new DialogUtilities(context);
-		this.productRef = storage.getReference().child("products");
+		this.productRef = storage.getReference().child("products").child("images");
 		this.imageRef = firestore.collection("images");
 	}
 
@@ -52,11 +52,11 @@ public class StorageRepository {
 				String downloadUrl = taskSnapshot.getMetadata().getPath();
 				String fileName = taskSnapshot.getMetadata().getName();
 
-				Map<String, String> file_data = new HashMap<>();
-				file_data.put("fileName", fileName);
-				file_data.put("downloadUrl", downloadUrl);
+				ImageFile imageFile = new ImageFile();
+				imageFile.setFileName(fileName);
+				imageFile.setDownloadUrl(downloadUrl);
 
-				writeDB(pid, file_data);
+				writeDB(pid, imageFile);
 			}
 		}).addOnFailureListener(new OnFailureListener() {
 			@Override
@@ -68,7 +68,7 @@ public class StorageRepository {
 
 	}
 
-	private void writeDB(String pid, Map<String, String> file_data) {
+	private void writeDB(String pid, ImageFile file_data) {
 		imageRef.document(pid).collection("images")
 				.add(file_data)
 				.addOnCompleteListener(new OnCompleteListener<DocumentReference>() {

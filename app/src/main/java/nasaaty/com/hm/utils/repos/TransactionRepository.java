@@ -246,20 +246,22 @@ public class TransactionRepository {
 																if (documentSnapshot.exists()){
 																	final Product product = documentSnapshot.toObject(Product.class);
 
-																	Query query = firestore.collection("users").whereEqualTo("uid", product.getOwner());
-																	query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-																		@Override
-																		public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-																			if (e != null) return;
+																	if (product.getPid().equals(pid)){
+																		Query query = firestore.collection("users").whereEqualTo("uid", product.getOwner());
+																		query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+																			@Override
+																			public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+																				if (e != null) return;
 
-																			for (DocumentSnapshot snapshot : queryDocumentSnapshots){
-																				if (snapshot.exists()){
-																					User user = snapshot.toObject(User.class);
-																					isUserReviewFound.isFound(true, review, product, user);
+																				for (DocumentSnapshot snapshot : queryDocumentSnapshots){
+																					if (snapshot.exists()){
+																						User user = snapshot.toObject(User.class);
+																						isUserReviewFound.isFound(true, review, product, user);
+																					}
 																				}
 																			}
-																		}
-																	});
+																		});
+																	}
 
 
 																}

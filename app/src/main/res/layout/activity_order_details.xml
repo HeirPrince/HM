@@ -134,6 +134,11 @@
 
                 <include layout="@layout/layout_product_reviewed"/>
 
+                <include layout="@layout/layout_rate_product"/>
+
+                <include layout="@layout/layout_image_list"/>
+
+
             </LinearLayout>
 
 

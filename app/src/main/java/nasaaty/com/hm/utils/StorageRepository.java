@@ -40,11 +40,11 @@ public class StorageRepository {
 		this.imageRef = firestore.collection("images");
 	}
 
-	public void uploadProductImage(final String pid, final Uri uri) {
+	public void uploadProductImage(final String pid, final Uri uri, final boolean isDefault) {
 		//add image to db
 //		dialogUtilities.showProgressDialog("Haha", "Saving "+fileName,true);
 
-		UploadTask uploadTask = productRef.child("images/" + pid + "/" + UUID.randomUUID().toString()).putFile(uri);
+		UploadTask uploadTask = productRef.child(pid + "/" + UUID.randomUUID().toString()).putFile(uri);
 
 		uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 			@Override
@@ -55,6 +55,11 @@ public class StorageRepository {
 				ImageFile imageFile = new ImageFile();
 				imageFile.setFileName(fileName);
 				imageFile.setDownloadUrl(downloadUrl);
+
+				if (isDefault)
+					imageFile.setDefault(true);
+				else
+					imageFile.setDefault(false);
 
 				writeDB(pid, imageFile);
 			}
@@ -87,11 +92,41 @@ public class StorageRepository {
 		return productRef.child(pid);
 	}
 
-	public void deleteProductImage(String pid) {
-
+	public StorageReference getDefaultIMage(String pid, String name){
+		return productRef.child(pid).child("default").child(name);
 	}
 
-	public void updateProductImage(String pid) {
-		deleteProductImage(pid);
+	public void uploadDefaultImage(final String pid, Uri default_image) {
+		UploadTask uploadTask = productRef.child(pid + "/default/" + UUID.randomUUID().toString()).putFile(default_image);
+
+		uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+			@Override
+			public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+				String downloadUrl = taskSnapshot.getMetadata().getPath();
+				String fileName = taskSnapshot.getMetadata().getName();
+
+				ImageFile imageFile = new ImageFile();
+				imageFile.setFileName(fileName);
+				imageFile.setDownloadUrl(downloadUrl);
+
+				imageRef.document(pid).collection("images").document("default")
+						.set(imageFile)
+						.addOnCompleteListener(new OnCompleteListener<Void>() {
+							@Override
+							public void onComplete(@NonNull Task<Void> task) {
+								if (task.isSuccessful()) {
+									Toast.makeText(context, "default image saved", Toast.LENGTH_SHORT).show();
+								} else {
+									Toast.makeText(context, "failed to save image Ref", Toast.LENGTH_SHORT).show();
+								}
+							}
+						});
+			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(@NonNull Exception e) {
+				Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 }

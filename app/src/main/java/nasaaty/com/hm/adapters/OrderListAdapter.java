@@ -2,6 +2,7 @@ package nasaaty.com.hm.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -16,18 +17,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import nasaaty.com.hm.R;
 import nasaaty.com.hm.activities.ProductDetails;
+import nasaaty.com.hm.model.ImageFile;
 import nasaaty.com.hm.model.Order;
 import nasaaty.com.hm.model.Product;
+import nasaaty.com.hm.utils.StorageRepository;
 import nasaaty.com.hm.viewmodels.OrderVModel;
 import nasaaty.com.hm.viewmodels.ProductListVModel;
 
@@ -39,6 +46,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 
 	private ProductListVModel productVModel;
 	private OrderVModel orderVModel;
+	private StorageRepository repository;
 
 	public OrderListAdapter(Context context, List<Order> orders, ProductListVModel productVModel, OrderVModel listVmodel) {
 		this.context = context;
@@ -46,6 +54,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 		this.productVModel = productVModel;
 		this.orderVModel = listVmodel;
 		this.firestore = FirebaseFirestore.getInstance();
+		this.repository = new StorageRepository(context);
 	}
 
 	@NonNull
@@ -59,7 +68,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 		//get product by id
 		final Order order = orders.get(position);
 
-		Query query = firestore.collection("favorites")
+		Query query = firestore.collection("products")
 				.whereEqualTo("pid", order.getProduct_id());
 		query.get()
 				.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -71,7 +80,34 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 							holder.p_title.setText(product.getLabel());
 							holder.p_desc.setText(product.getDescription());
 							holder.p_price.setText(String.valueOf(product.getPrice()));
-							Toast.makeText(context, product.getLabel(), Toast.LENGTH_SHORT).show();
+
+							//load product image
+							DocumentReference reference = firestore.collection("images").document(product.getPid()).collection("images").document("default");
+							reference
+									.get()
+									.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+										@Override
+										public void onSuccess(DocumentSnapshot documentSnapshot) {
+											if (documentSnapshot.exists()){
+												ImageFile imageFile = documentSnapshot.toObject(ImageFile.class);
+												StorageReference defRef = repository.getDefaultIMage(product.getPid(), imageFile.getFileName());
+												defRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+													@Override
+													public void onSuccess(Uri uri) {
+														Picasso.get()
+																.load(uri)
+																.placeholder(R.drawable.deliverer)
+																.into(holder.p_img);
+													}
+
+												});
+											}else {
+												Toast.makeText(context, "error loading image", Toast.LENGTH_SHORT).show();
+											}
+										}
+									});
+
+
 
 							holder.delete.setOnClickListener(new View.OnClickListener() {
 								@Override
@@ -147,6 +183,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 			p_price = itemView.findViewById(R.id.price);
 			qty = itemView.findViewById(R.id.qty);
 			delete = itemView.findViewById(R.id.del);
+			p_img = itemView.findViewById(R.id.img);
 		}
 	}
 

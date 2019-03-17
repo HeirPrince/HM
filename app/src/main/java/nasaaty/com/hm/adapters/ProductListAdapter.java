@@ -198,7 +198,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
 	class productVHolder extends RecyclerView.ViewHolder {
 
-		TextView label, price, tvViews;
+		TextView label, price;
 		ReadMoreTextView desc;
 		Button plc_order;
 		ImageButton fav;
@@ -214,7 +214,6 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 			pro_image = itemView.findViewById(R.id.product_image);
 			fav = itemView.findViewById(R.id.fav);
 			progressBar = itemView.findViewById(R.id.progress);
-			tvViews = itemView.findViewById(R.id.tv_views);
 		}
 
 		public void toggleFav(boolean b) {

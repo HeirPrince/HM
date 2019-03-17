@@ -24,12 +24,14 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nasaaty.com.hm.R;
 import nasaaty.com.hm.adapters.GalleryAdapter;
+import nasaaty.com.hm.model.ImageFile;
 import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.room.HahaDB;
 import nasaaty.com.hm.utils.PermissionUtils;
@@ -39,18 +41,19 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 
 	private static final int GALLERY_REQUEST_CODE = 100;
 	EditText label, desc, price;
-	ImageView imageView;
+	ImageView imageView, defIMage;
 	Spinner cats;
 	private HahaDB hahaDB;
 	private FirebaseAuth auth;
 	private ProductVModel vModel;
 	private PermissionUtils permissionUtils;
-	private Uri image;
+	private Uri def_image;
 	private android.support.v7.widget.Toolbar toolbar;
 
 	private String imageEncoded;
 	private List<String> imageEncodedList;
 	private List<Uri> uriList;
+	private List<ImageFile> fileList;
 	private GridView gvGallery;
 	private GalleryAdapter adapter;
 
@@ -64,6 +67,7 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 		permissionUtils = new PermissionUtils(this);
 		imageEncodedList = new ArrayList<>();
 		uriList = new ArrayList<>();
+		fileList = new ArrayList<>();
 
 		bindViews();
 		hahaDB = HahaDB.getInstance(this);
@@ -76,6 +80,7 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 		desc = findViewById(R.id.desc);
 		price = findViewById(R.id.price);
 		imageView = findViewById(R.id.product_image);
+		defIMage = findViewById(R.id.def_image);
 		gvGallery = findViewById(R.id.gv);
 		cats = findViewById(R.id.cat_spinner);
 
@@ -101,7 +106,17 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 		product.setNumRatings(0);
 		product.setAvgRatings(0.0);
 
-		vModel.insertNew(product, uriList);
+		vModel.insertNew(product, uriList, def_image, new ProductVModel.onUploadDone() {
+			@Override
+			public void done(Boolean ok) {
+				if (ok) {
+					finish();
+					startActivity(new Intent(AddProduct.this, Home.class));
+				}else {
+					Toast.makeText(AddProduct.this, "upload failed", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
 	}
 
 	private void pickFromGallery() {
@@ -116,6 +131,19 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 		}
 
 		startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), GALLERY_REQUEST_CODE);
+	}
+
+	private void pickDefFromGallery() {
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT)
+				.setType("image/*")
+				.addCategory(Intent.CATEGORY_OPENABLE);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			String[] mimeTypes = {"image/jpeg", "image/png"};
+			intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+		}
+
+		startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), 001);
 	}
 
 	public void pickImage(View view) {
@@ -151,9 +179,14 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 					imageEncoded  = cursor.getString(columnIndex);
 					cursor.close();
 
-					ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+					ArrayList<Uri> mArrayUri = new ArrayList<>();
 					mArrayUri.add(mImageUri);
-					adapter = new GalleryAdapter(getApplicationContext(),mArrayUri);
+					ImageFile file = new ImageFile();
+					file.setDefault(false);
+					file.setFile(mImageUri);
+					fileList.add(file);
+
+					adapter = new GalleryAdapter(getApplicationContext(),fileList);
 					gvGallery.setAdapter(adapter);
 					gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
 					ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
@@ -168,6 +201,10 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 							ClipData.Item item = mClipData.getItemAt(i);
 							Uri uri = item.getUri();
 							uriList.add(uri);
+							ImageFile imageFile = new ImageFile();
+							imageFile.setFile(uri);
+							imageFile.setDefault(false);
+							fileList.add(imageFile);
 							// Get the cursor
 							Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
 							// Move to first row
@@ -178,7 +215,7 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 							imageEncodedList.add(imageEncoded);
 							cursor.close();
 
-							adapter = new GalleryAdapter(getApplicationContext(),uriList);
+							adapter = new GalleryAdapter(getApplicationContext(),fileList);
 							gvGallery.setAdapter(adapter);
 							gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
 							ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
@@ -189,7 +226,11 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 						Log.v("LOG_TAG", "Selected Images" + uriList.size());
 					}
 				}
-			} else {
+			}else if (requestCode == 001 && resultCode == RESULT_OK & null != data){
+				def_image = data.getData();
+				Picasso.get().load(def_image).into(defIMage);
+			}
+			else {
 				Toast.makeText(this, "You haven't picked Image",
 						Toast.LENGTH_LONG).show();
 			}
@@ -208,6 +249,15 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 
 	@Override
 	public void onNothingSelected(AdapterView<?> adapterView) {
-		
+
+	}
+
+	public void pickDefImage(View view) {
+		Permissions.check(this/*context*/, Manifest.permission.READ_EXTERNAL_STORAGE, null, new PermissionHandler() {
+			@Override
+			public void onGranted() {
+				pickDefFromGallery();
+			}
+		});
 	}
 }

@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="18000"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/white"
                         android:textSize="15sp"
                         android:layout_marginBottom="4dp"
                         android:textStyle="bold" />
@@ -99,18 +99,7 @@
                        android:layout_alignParentEnd="true"
                        android:layout_centerVertical="true">
 
-                       <View
-                           android:layout_width="20dp"
-                           android:layout_height="20dp"
-                           android:background="@drawable/vector_view"
-                           android:backgroundTint="@color/colorPrimary"/>
-
-                       <TextView
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:layout_marginStart="4dp"
-                           android:id="@+id/tv_views"
-                           android:text="3"/>
+                       <include layout="@layout/rate_item"/>
 
                    </LinearLayout>
 

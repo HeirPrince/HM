@@ -1,8 +1,12 @@
 package nasaaty.com.hm.model;
 
+import android.net.Uri;
+
 public class ImageFile {
 	private String fileName;
 	private String downloadUrl;
+	private Uri file;
+	private Boolean isDefault;
 
 	public ImageFile() {
 	}
@@ -21,5 +25,21 @@ public class ImageFile {
 
 	public void setDownloadUrl(String downloadUrl) {
 		this.downloadUrl = downloadUrl;
+	}
+
+	public Uri getFile() {
+		return file;
+	}
+
+	public void setFile(Uri file) {
+		this.file = file;
+	}
+
+	public Boolean getDefault() {
+		return isDefault;
+	}
+
+	public void setDefault(Boolean aDefault) {
+		isDefault = aDefault;
 	}
 }

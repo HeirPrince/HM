@@ -37,7 +37,7 @@ public class ProductVModel extends AndroidViewModel{
 		this.transactionRepository = new TransactionRepository(application);
 	}
 
-	public void insertNew(final Product product, final List<Uri> images){
+	public void insertNew(final Product product, final List<Uri> images, final Uri def_image, final onUploadDone done){
 		DocumentReference push = firebaseFirestore.collection("products").document();
 		String id = push.getId();
 		DocumentReference proRef = firebaseFirestore.collection("products").document(id);
@@ -48,34 +48,42 @@ public class ProductVModel extends AndroidViewModel{
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						if (task.isSuccessful()){
-							Toast.makeText(getApplication(), product.getLabel()+" saved.", Toast.LENGTH_SHORT).show();
-							new insertProductAsync(hahaDB, images).execute(product);
+							done.done(true);
+							new insertProductAsync(hahaDB, images, def_image).execute(product);
 						}
 					}
 				})
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
+						done.done(false);
 						Toast.makeText(getApplication(), e.getMessage(), Toast.LENGTH_LONG).show();
 					}
 				});
+	}
+
+	public interface onUploadDone{
+		void done(Boolean ok);
 	}
 
 	private class insertProductAsync extends AsyncTask<Product, Void, Void> {
 
 		HahaDB hahaDBase;
 		List<Uri> uris;
+		Uri default_image;
 
-		public insertProductAsync(HahaDB hahaDB, List<Uri> images) {
+		public insertProductAsync(HahaDB hahaDB, List<Uri> images, Uri def_image) {
 			hahaDBase = hahaDB;
 			uris = images;
+			default_image = def_image;
 		}
 
 		@Override
 		protected Void doInBackground(Product... products) {
 			hahaDBase.productEntity().insertProduct(products[0]);
+			storageRepository.uploadDefaultImage(products[0].getPid(), default_image);
 			for (Uri uri : uris) {
-				storageRepository.uploadProductImage(products[0].getPid(), uri);
+				storageRepository.uploadProductImage(products[0].getPid(), uri, true);
 			}
 			return null;
 		}

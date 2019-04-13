@@ -1,6 +1,7 @@
 package nasaaty.com.hm.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity
@@ -11,6 +12,7 @@ public class Favorite {
 	private String product_id;
 	private String product_label;
 
+	@Ignore
 	public Favorite() {
 	}
 

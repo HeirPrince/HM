@@ -1,6 +1,7 @@
 package nasaaty.com.hm.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity
@@ -16,19 +17,23 @@ public class Product {
 	public int numRatings;
 	public double avgRatings;
 	private String category;
+	private String timeStamp;
 
+	@Ignore
 	public Product() {
 	}
 
-	public Product(String pid, String label, String description, int price, String owner, String category, int numRatings, double avgRatings) {
+	public Product(int id, String pid, String label, String description, int price, String owner, int numRatings, double avgRatings, String category, String timeStamp) {
+		this.id = id;
 		this.pid = pid;
 		this.label = label;
 		this.description = description;
 		this.price = price;
 		this.owner = owner;
-		this.category = category;
 		this.numRatings = numRatings;
 		this.avgRatings = avgRatings;
+		this.category = category;
+		this.timeStamp = timeStamp;
 	}
 
 	public int getId() {
@@ -79,14 +84,6 @@ public class Product {
 		this.owner = owner;
 	}
 
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
-
 	public int getNumRatings() {
 		return numRatings;
 	}
@@ -101,5 +98,21 @@ public class Product {
 
 	public void setAvgRatings(double avgRatings) {
 		this.avgRatings = avgRatings;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 }

@@ -9,4 +9,13 @@
         <item>Office</item>
         <item>Kitchen tools</item>
     </string-array>
+
+    <string-array name="menuOptions" >
+        <item>Explore</item>
+        <item>Cart</item>
+        <item>Favorites</item>
+        <item>My Products</item>
+        <item>My Orders</item>
+    </string-array>
+
 </resources>

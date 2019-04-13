@@ -1,6 +1,7 @@
 package nasaaty.com.hm.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity
@@ -15,6 +16,7 @@ public class User {
 	private String phoneNum;
 	private String providerID;
 
+	@Ignore
 	public User() {
 	}
 

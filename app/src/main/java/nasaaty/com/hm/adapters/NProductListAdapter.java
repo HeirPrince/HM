@@ -12,7 +12,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import nasaaty.com.hm.R;
-import nasaaty.com.hm.model.Order;
 import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.utils.DialogUtilities;
 import nasaaty.com.hm.viewmodels.OrderVModel;
@@ -49,16 +48,14 @@ public class NProductListAdapter extends RecyclerView.Adapter<NProductListAdapte
 			@Override
 			public void onClick(View view) {
 
-				if (vModel.checkIfProductExists(product.getPid())) {
-					dialogUtilities.showErrorDialog("Insert Product", "This Order has already been placed");
-				} else {
-					Order order = new Order();
-					order.setOwner(products.get(position).getOwner());
-					order.setProduct_id(products.get(position).getPid());
-//					vModel.getDetails()
-
-					vModel.insertOrder(order);
-				}
+//				if (vModel.checkIfProductExists(product.getPid())) {
+//				} else {
+////					vModel.getDetails();
+//
+//					dialogUtilities.showErrorDialog("Insert Product", "This MyOrder has already been placed");
+//
+//				}
+				vModel.insertOrder(products.get(position));
 
 			}
 		});

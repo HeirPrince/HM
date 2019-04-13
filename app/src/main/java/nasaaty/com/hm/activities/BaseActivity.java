@@ -1,10 +1,8 @@
 package nasaaty.com.hm.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
+import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -31,7 +29,7 @@ public class BaseActivity extends AppCompatActivity {
 		FirebaseAuth auth = FirebaseAuth.getInstance();
 		if (auth.getCurrentUser() != null) {
 			// already signed in
-			startActivity(new Intent(BaseActivity.this, Home.class));
+			startActivity(new Intent(BaseActivity.this, Main.class));
 		} else {
 			// not signed in
 			startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
@@ -55,7 +53,7 @@ public class BaseActivity extends AppCompatActivity {
 
 			// Successfully signed in
 			if (resultCode == RESULT_OK) {
-				startActivity(new Intent(BaseActivity.this, Home.class));
+				startActivity(new Intent(BaseActivity.this, Main.class));
 				finish();
 			} else {
 				// Sign in failed

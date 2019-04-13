@@ -5,22 +5,19 @@ import java.util.List;
 
 public class Constants {
 
-
-	static List<String> categories = new ArrayList<>();
-	public static String[] getCats(){
-
-		categories.add("Clothes");
-		categories.add("Smartphones");
-		categories.add("Accessories");
-		categories.add("Electronics");
-		categories.add("Smartphones");
-
-		String[] array = new String[categories.size()];
-
-		return array;
+	public Constants() {
 	}
 
-	public static String getSelectedCat(int pos) {
-		return categories.get(pos);
+	public List<String> getCategories(){
+		List<String> categories = new ArrayList<>();
+		categories.add("Electronics");
+		categories.add("Home Appliances");
+		categories.add("Phone Accessories");
+		categories.add("Clothes");
+		categories.add("Beauty");
+		categories.add("Office");
+		categories.add("Kitchen Tools");
+
+		return categories;
 	}
 }

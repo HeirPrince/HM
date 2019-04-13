@@ -8,11 +8,11 @@ import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 
 import nasaaty.com.hm.model.Favorite;
-import nasaaty.com.hm.model.Order;
+import nasaaty.com.hm.model.MyOrder;
 import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.model.User;
 
-@Database(entities = {User.class, Product.class, Order.class, Favorite.class}, version = 8)
+@Database(entities = {User.class, Product.class, MyOrder.class, Favorite.class}, version = 10)
 public abstract class HahaDB extends RoomDatabase {
 
 	private static HahaDB Instance;

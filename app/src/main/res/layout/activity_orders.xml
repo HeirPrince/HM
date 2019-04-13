@@ -25,7 +25,6 @@
         android:layout_height="wrap_content"
         android:text="Checkout"
         android:layout_alignParentBottom="true"
-        android:id="@+id/chkout"
-        android:onClick="checkOutOrders"/>
+        android:id="@+id/chkout"/>
 
 </RelativeLayout>

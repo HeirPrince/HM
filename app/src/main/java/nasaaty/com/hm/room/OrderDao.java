@@ -8,7 +8,6 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-import nasaaty.com.hm.model.Order;
 import nasaaty.com.hm.model.Product;
 
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
@@ -17,22 +16,22 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 public interface OrderDao {
 
 	@Insert(onConflict = REPLACE)
-	public void placeOrder(Order order);
+	void placeOrder(Product product);
 
-	@Query("SELECT * FROM `Order`")
-	LiveData<List<Order>> getOrders();
+	@Query("SELECT * FROM `Product`")
+	LiveData<List<Product>> getOrders();
 
-	@Query("DELETE FROM `Order`")
+	@Query("DELETE FROM `Product`")
 	void deleteAll();
 
-	@Query("SELECT * FROM `Order` WHERE id = :id")
-	Order getOrderDetails(Integer id);
+	@Query("SELECT * FROM `Product` WHERE pid = :pid")
+	Product getOrderDetails(Integer pid);
 
-	@Query("SELECT product_id FROM `Order` WHERE product_id = :pid")
-	String getItemById(String pid);
+	@Query("SELECT * FROM `Product` WHERE pid = :pid")
+	Product getOrderByID(String pid);
 
 	@Delete
-	void deleteOrder(Order order);
+	void deleteOrder(Product product);
 
 	//get undone orders
 }

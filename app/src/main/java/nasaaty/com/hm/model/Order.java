@@ -1,66 +1,41 @@
 package nasaaty.com.hm.model;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
-
-@Entity
 public class Order {
-	@PrimaryKey(autoGenerate = true)
-	private int id;
 
-	private String order_id;
-	private String product_id;
-	private String owner;
-	private int count;
+	private String customer_id;
+	private Product product;
+	private String timeStamp;
 
 	public Order() {
 	}
 
-	public Order(int id, String order_id, String product_id, String owner, int count) {
-		this.id = id;
-		this.order_id = order_id;
-		this.product_id = product_id;
-		this.owner = owner;
-		this.count = count;
+	public Order(String customer_id, Product product, String timeStamp) {
+		this.customer_id = customer_id;
+		this.product = product;
+		this.timeStamp = timeStamp;
 	}
 
-	public int getId() {
-		return id;
+	public String getCustomer_id() {
+		return customer_id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setCustomer_id(String customer_id) {
+		this.customer_id = customer_id;
 	}
 
-	public String getOrder_id() {
-		return order_id;
+	public Product getProduct() {
+		return product;
 	}
 
-	public void setOrder_id(String order_id) {
-		this.order_id = order_id;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 
-	public String getProduct_id() {
-		return product_id;
+	public String getTimeStamp() {
+		return timeStamp;
 	}
 
-	public void setProduct_id(String product_id) {
-		this.product_id = product_id;
-	}
-
-	public String getOwner() {
-		return owner;
-	}
-
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
-
-	public int getCount() {
-		return count;
-	}
-
-	public void setCount(int count) {
-		this.count = count;
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 }

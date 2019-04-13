@@ -105,6 +105,7 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 		product.setCategory(cats.getSelectedItem().toString());
 		product.setNumRatings(0);
 		product.setAvgRatings(0.0);
+		product.setTimeStamp(getTimeStamp());
 
 		vModel.insertNew(product, uriList, def_image, new ProductVModel.onUploadDone() {
 			@Override
@@ -117,6 +118,10 @@ public class AddProduct extends AppCompatActivity implements AdapterView.OnItemS
 				}
 			}
 		});
+	}
+
+	private String getTimeStamp() {
+		return String.valueOf(System.currentTimeMillis() / 1000);
 	}
 
 	private void pickFromGallery() {

@@ -13,10 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.MaterialTheme">
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <!--<activity-->
+            <!--android:name="com.yalantis.ucrop.UCropActivity"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.SignIn" />
         <activity android:name=".activities.Home" />
@@ -33,7 +33,9 @@
         <activity android:name=".activities.ProductDetails" />
         <activity android:name=".activities.ADDPList" />
         <activity android:name=".activities.Favorites" />
-        <activity android:name=".activities.ReviewP"></activity>
+        <activity android:name=".activities.ReviewP" />
+        <activity android:name=".activities.Main">
+        </activity>
     </application>
 
 </manifest>

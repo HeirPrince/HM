@@ -48,7 +48,6 @@ import com.squareup.picasso.Picasso;
 
 import nasaaty.com.hm.R;
 import nasaaty.com.hm.model.ImageFile;
-import nasaaty.com.hm.model.Order;
 import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.model.User;
 import nasaaty.com.hm.utils.DialogUtilities;
@@ -239,11 +238,7 @@ public class Home extends AppCompatActivity {
 				holder.plc_order.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						Order order = new Order();
-						order.setOwner(model.getOwner());
-						order.setProduct_id(model.getPid());
-						order.setOrder_id(model.getPid());
-						orderVModel.insertOrder(order);
+						orderVModel.insertOrder(model);
 					}
 				});
 
@@ -413,10 +408,6 @@ public class Home extends AppCompatActivity {
 		}
 
 		return true;
-	}
-
-	public void addP(View view) {
-		startActivity(new Intent(Home.this, AddProduct.class));
 	}
 
 	@Override

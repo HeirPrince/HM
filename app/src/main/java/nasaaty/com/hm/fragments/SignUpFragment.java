@@ -28,15 +28,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import nasaaty.com.hm.R;
 import nasaaty.com.hm.activities.Home;
-import nasaaty.com.hm.model.User;
 import nasaaty.com.hm.viewmodels.UserVModel;
 
 /**

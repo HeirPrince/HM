@@ -35,6 +35,8 @@ import nasaaty.com.hm.fragments.Cart;
 import nasaaty.com.hm.fragments.Explore;
 import nasaaty.com.hm.fragments.Favorites;
 import nasaaty.com.hm.fragments.MyOrders;
+import nasaaty.com.hm.fragments.HahaDelivery;
+import nasaaty.com.hm.model.Product;
 import nasaaty.com.hm.model.User;
 import nasaaty.com.hm.utils.DialogUtilities;
 import nasaaty.com.hm.viewmodels.UserVModel;
@@ -42,7 +44,7 @@ import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
-public class Main extends AppCompatActivity implements DuoMenuView.OnMenuClickListener {
+public class Main extends AppCompatActivity implements DuoMenuView.OnMenuClickListener, MyOrders.sendDetailsToSheet{
 
 	boolean doubleBackToExitPressedOnce = false;
 	private final Runnable mRunnable = new Runnable() {
@@ -61,6 +63,7 @@ public class Main extends AppCompatActivity implements DuoMenuView.OnMenuClickLi
 	private FirebaseFirestore firestore;
 	private Handler handler = new Handler();
 	private UserVModel vModel;
+	HahaDelivery sheetMethod;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,7 @@ public class Main extends AppCompatActivity implements DuoMenuView.OnMenuClickLi
 		firestore = FirebaseFirestore.getInstance();
 		vModel = ViewModelProviders.of(this).get(UserVModel.class);
 		dialogUtilities = new DialogUtilities(this);
+		sheetMethod = new HahaDelivery();
 
 		mTitles = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.menuOptions)));
 
@@ -298,6 +302,11 @@ public class Main extends AppCompatActivity implements DuoMenuView.OnMenuClickLi
 		}
 
 		return true;
+	}
+
+	@Override
+	public void details(Product product) {
+
 	}
 
 	private class ViewHolder {

@@ -48,6 +48,9 @@ dependencies {
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
     implementation 'nl.psdcompany:duo-navigation-drawer:2.0.8'
+    implementation 'org.michaelbel:bottomsheet:1.2.3'
+    implementation 'com.github.transferwise:sequence-layout:1.0.7'
+    implementation 'com.ss.bannerslider:bannerslider:2.0.0'
 
 
     implementation 'com.google.firebase:firebase-core:16.0.7'

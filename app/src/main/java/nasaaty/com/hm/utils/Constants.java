@@ -5,7 +5,17 @@ import java.util.List;
 
 public class Constants {
 
+	String message = "";
+
 	public Constants() {
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public List<String> getCategories(){

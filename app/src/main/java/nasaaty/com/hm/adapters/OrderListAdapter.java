@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -117,21 +118,24 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 		return orders.size();
 	}
 
-	public void addItem(Product order){
-		orders.add(order);
+	public void addItem(Product order, int pos){
+		orders.add(pos, order);
+		orderVModel.insertOrder(order);
 		notifyItemInserted(orders.size());
 	}
 
 	public void removeItem(int position){
+		orderVModel.deleteOrder(orders.get(position));
 		orders.remove(position);
 		notifyItemRemoved(position);
 		notifyItemRangeRemoved(position, orders.size());
 	}
 
-	class OrderVHolder extends RecyclerView.ViewHolder {
+	public class OrderVHolder extends RecyclerView.ViewHolder {
 
 		TextView p_title, p_price, qty;
 		ImageView p_img;
+		public RelativeLayout backgroundView, foregroundView;
 
 		public OrderVHolder(View itemView) {
 			super(itemView);
@@ -139,6 +143,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
 			p_price = itemView.findViewById(R.id.p_price);
 			qty = itemView.findViewById(R.id.qty);
 			p_img = itemView.findViewById(R.id.img);
+			backgroundView = itemView.findViewById(R.id.view_background);
+			foregroundView = itemView.findViewById(R.id.view_foreground);
 		}
 	}
 

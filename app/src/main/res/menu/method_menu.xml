@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:icon="@drawable/vector_haha_delivery"
+        android:title="haha Delivery"/>
+
+    <item android:icon="@drawable/vector_call_owner"
+        android:title="Call Owner"/>
+
+    <item android:icon="@drawable/vector_chat"
+        android:title="Send Message"/>
+
+</menu>

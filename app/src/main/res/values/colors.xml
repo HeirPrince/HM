@@ -14,4 +14,12 @@
     <color name="lighter_bg">#ECEFF1</color>
     <color name="yellow">#FFD54F</color>
     <color name="grey">#EEEEEE</color>
+    <color name="green">#00C853</color>
+
+
+    //StepView
+    <color name="step_completed_line_color">#4CAF50</color>
+    <color name="step_uncompleted_line_color">#607D8B</color>
+    <color name="step_completed_text_color">#4CAF50</color>
+    <color name="step_uncompleted_text_color">#607D8B</color>
 </resources>

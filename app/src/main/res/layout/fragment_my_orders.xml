@@ -3,25 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
     tools:context=".fragments.MyOrders">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/footer"
         android:background="@color/lighter_bg"
         android:padding="6dp"/>
 
-    <RelativeLayout
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true">
-
-
-
-    </RelativeLayout>
 
 
 </RelativeLayout>

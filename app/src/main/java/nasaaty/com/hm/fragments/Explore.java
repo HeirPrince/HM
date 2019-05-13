@@ -1,55 +1,46 @@
 package nasaaty.com.hm.fragments;
 
 
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nasaaty.com.hm.R;
-import nasaaty.com.hm.activities.AddProduct;
-import nasaaty.com.hm.adapters.ProductListAdapter;
-import nasaaty.com.hm.model.Section;
-import nasaaty.com.hm.utils.Constants;
-import nasaaty.com.hm.utils.StorageRepository;
-import nasaaty.com.hm.viewmodels.OrderVModel;
+import nasaaty.com.hm.adapters.AdAdapter;
+import nasaaty.com.hm.adapters.CatAdapter;
+import nasaaty.com.hm.model.AdModel;
+import nasaaty.com.hm.model.CatModel;
+import nasaaty.com.hm.utils.PicassoImageLoadingService;
+import ss.com.bannerslider.Slider;
+import ss.com.bannerslider.event.OnSlideClickListener;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class Explore extends Fragment {
 
-	StorageRepository storageRepository;
-	List<Section> sections;
-	Constants constants;
-	RecyclerView list;
-	FloatingActionButton fab;
-	private FirebaseAuth firebaseAuth;
-	private FirebaseFirestore firestore;
-	private OrderVModel orderVModel;
-	private Query mQuery;
-	private ProductListAdapter mAdapter;
+	RecyclerView cat_list;
 
 	public Explore() {
 		// Required empty public constructor
 	}
 
+	public static int calculateNoOfColumns(Context context, float columnWidthDp) { // For example columnWidthdp=180
+		DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+		float screenWidthDp = displayMetrics.widthPixels / displayMetrics.density;
+		int noOfColumns = (int) (screenWidthDp / columnWidthDp + 0.5); // +0.5 for correct rounding to int.
+		return noOfColumns;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,113 +48,56 @@ public class Explore extends Fragment {
 		// Inflate the layout for this fragment
 		View view = inflater.inflate(R.layout.fragment_explore, container, false);
 
-		FirebaseFirestore.setLoggingEnabled(true);
-		firestore = FirebaseFirestore.getInstance();
-		firebaseAuth = FirebaseAuth.getInstance();
-		list = view.findViewById(R.id.product_list);
-		fab = view.findViewById(R.id.fab);
+		Slider slider = view.findViewById(R.id.banner_slider1);
+		Slider.init(new PicassoImageLoadingService(getContext()));
+		slider.setAdapter(new AdAdapter(getImages()));
 
-		list.setLayoutManager(new LinearLayoutManager(getContext()));
-		list.setHasFixedSize(true);
-		list.setItemAnimator(new DefaultItemAnimator());
-
-		constants = new Constants();
-
-		mQuery = firestore.collection("products").orderBy("avgRatings", Query.Direction.DESCENDING);
-		sections = new ArrayList<>();
-
-		storageRepository = new StorageRepository(getContext());
-		orderVModel = ViewModelProviders.of(this).get(OrderVModel.class);
-		
-		getData();
-		fab.setOnClickListener(new View.OnClickListener() {
+		slider.setOnSlideClickListener(new OnSlideClickListener() {
 			@Override
-			public void onClick(View view) {
-				addProduct();
+			public void onSlideClick(int position) {
+				Toast.makeText(getContext(), "selected "+position, Toast.LENGTH_SHORT).show();
 			}
 		});
+
+		cat_list = view.findViewById(R.id.cat_list);
+
+		int colCount = calculateNoOfColumns(getContext(), 120);
+
+		cat_list.setLayoutManager(new GridLayoutManager(getContext(), colCount));
+		cat_list.setHasFixedSize(true);
+		CatAdapter adapter = new CatAdapter(getContext(), getCats());
+		cat_list.setAdapter(adapter);
 
 		return view;
 	}
 
-	private void getData() {
-		mAdapter = new ProductListAdapter(getContext(), mQuery, orderVModel){
-			@Override
-			protected void onDataChanged() {
-				if (getItemCount() == 0) {
-					list.setVisibility(View.GONE);
-					//empty view
-				} else {
-					list.setVisibility(View.VISIBLE);
-					//empty view
-				}
-			}
+	private List<CatModel> getCats() {
+		List<CatModel> catModels = new ArrayList<>();
+		catModels.add(new CatModel("Electronics", R.drawable.electronics));
+		catModels.add(new CatModel("Vehicles", R.drawable.vehicles));
+		catModels.add(new CatModel("Fashion", R.drawable.fashion));
+		catModels.add(new CatModel("Kitchen Tools", R.drawable.kitchen_tools));
+		catModels.add(new CatModel("Toys", R.drawable.toys));
+		catModels.add(new CatModel("Food", R.drawable.food));
+		catModels.add(new CatModel("Furniture", R.drawable.furniture));
+		catModels.add(new CatModel("Services", R.drawable.services));
 
-			@Override
-			protected void onError(FirebaseFirestoreException e) {
-				super.onError(e);
-			}
-		};
-
-		list.setLayoutManager(new LinearLayoutManager(getContext()));
-		list.setAdapter(mAdapter);
+		return catModels;
 	}
 
-	public void refreshLists(List<Section> sections){
-		if (!sections.isEmpty()){
-			sections.clear();
-			list.setVisibility(View.VISIBLE);
-		}else {
-			list.setVisibility(View.GONE);
-		}
+	private List<AdModel> getImages() {
+		List<AdModel> adModels = new ArrayList<>();
+
+		adModels.add(new AdModel("https://assets.materialup.com/uploads/dcc07ea4-845a-463b-b5f0-4696574da5ed/preview.jpg", "kk"));
+		adModels.add(new AdModel("https://assets.materialup.com/uploads/20ded50d-cc85-4e72-9ce3-452671cf7a6d/preview.jpg", "kk"));
+		adModels.add(new AdModel("https://assets.materialup.com/uploads/76d63bbc-54a1-450a-a462-d90056be881b/preview.png", "kk"));
+		adModels.add(new AdModel("https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&ved=2ahUKEwj-jIPCyJniAhWQZlAKHWyuDDIQjRx6BAgBEAU&url=https%3A%2F%2Fwww.adweek.com%2Fprogrammatic%2Fbiddable-ads-are-coming-to-tiktok-opening-up-the-popular-platform-to-more-marketers%2F&psig=AOvVaw20qzkzcZH0sSeFXSqOAVQG&ust=1557873232611850",
+				"kk"));
+		adModels.add(new AdModel("https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjO86SLyZniAhVDUlAKHeYMDLsQjRx6BAgBEAU&url=%2Furl%3Fsa%3Di%26rct%3Dj%26q%3D%26esrc%3Ds%26source%3Dimages%26cd%3D%26ved%3D%26url%3Dhttps%253A%252F%252Fwww.adweek.com%252Fcreativity%252Fpepsi-is-blanketing-cokes-hometown-with-ads-as-atlanta-prepares-for-the-super-bowl%252F%26psig%3DAOvVaw20qzkzcZH0sSeFXSqOAVQG%26ust%3D1557873232611850&psig=AOvVaw20qzkzcZH0sSeFXSqOAVQG&ust=1557873232611850",
+				"kk"));
+		
+		return adModels;
 	}
 
 
-
-	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		getData();
-	}
-
-//	public void getD() {
-//
-//		mAdapter = new ProductListAdapter(getContext(), mQuery, orderVModel){
-//			@Override
-//			protected void onDataChanged() {
-//				if (getItemCount() == 0){
-//					list.setVisibility(View.GONE);
-//					//show empty view
-//				} else {
-//					list.setVisibility(View.VISIBLE);
-//					//hide empty view
-//				}
-//			}
-//
-//			@Override
-//			protected void onError(FirebaseFirestoreException e) {
-//				Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-//			}
-//		};
-//
-//		list.setLayoutManager(new LinearLayoutManager(getContext()));
-//		list.setAdapter(mAdapter);
-//	}
-
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		mAdapter.startListening();
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		mAdapter.stopListening();
-	}
-
-	public void addProduct() {
-		getContext().startActivity(new Intent(getContext(), AddProduct.class));
-	}
 }

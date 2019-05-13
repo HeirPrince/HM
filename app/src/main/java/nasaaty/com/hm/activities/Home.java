@@ -86,7 +86,6 @@ public class Home extends AppCompatActivity {
 		setSupportActionBar(tb);
 		firestore = FirebaseFirestore.getInstance();
 
-
 		list = findViewById(R.id.product_list);
 		storageRepository = new StorageRepository(this);
 		vModel = ViewModelProviders.of(this).get(UserVModel.class);

@@ -1,25 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/cord"
     tools:context=".fragments.Cart">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/order_List"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="2dp"
-        android:background="@color/lighter_bg"
-        android:clipToPadding="false"
-        android:padding="4dp"
-        android:paddingBottom="@dimen/bottom_space"/>
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/chkout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:text="Checkout" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/order_List"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:background="@color/lighter_bg"
+            android:clipToPadding="false"
+            android:padding="4dp"
+            android:paddingBottom="@dimen/bottom_space"/>
 
-</FrameLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:padding="14dp">
+
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_above="@id/chkout"
+                android:columnCount="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_columnWeight="10"
+                    android:text="Total     ................................"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    />
+
+                <TextView
+                    android:id="@+id/tot_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:layout_columnWeight="1"
+                    android:text="RF 10500"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/accent"
+                    android:textSize="20sp" />
+
+
+            </GridLayout>
+
+            <Button
+                android:id="@+id/chkout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:background="@color/accent"
+                android:text="Checkout"
+                android:textColor="@color/white"/>
+
+        </RelativeLayout>
+
+
+
+    </FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>
